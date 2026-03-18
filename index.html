@@ -3,1324 +3,1127 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI & Supply Chain Research — Semi-Structured Interview</title>
-
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getFirestore, collection, addDoc, doc, updateDoc, serverTimestamp }
-    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-  window._fbModules = { initializeApp, getFirestore, collection, addDoc, doc, updateDoc, serverTimestamp };
-</script>
-
+<title>Research Survey — AI & Luxury Supply Chain</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
-/* ─── Design tokens ─── */
 :root {
-  --bg:        #0e0e10;
-  --surface:   #16161a;
-  --border:    #2a2a30;
-  --gold:      #c9a84c;
-  --gold-dim:  #7a6230;
-  --text:      #e8e6e0;
-  --muted:     #7a7870;
-  --accent:    #4a8fa8;
-  --danger:    #b05050;
-  --radius:    12px;
-  --transition: 0.28s cubic-bezier(0.4,0,0.2,1);
+  --bg: #f7f5f0;
+  --white: #ffffff;
+  --ink: #1a1814;
+  --ink-light: #6b6760;
+  --gold: #9a7c3e;
+  --gold-light: #e8dfc8;
+  --gold-pale: #f4f0e6;
+  --border: #e2ddd4;
+  --radius: 4px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { scroll-behavior: smooth; }
+
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Outfit', sans-serif;
   background: var(--bg);
-  color: var(--text);
+  color: var(--ink);
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background-image:
-    radial-gradient(ellipse 60% 40% at 80% 10%, #1a1508 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 10% 90%, #0a1520 0%, transparent 50%);
+  padding: 0;
 }
 
-/* ─── Screens ─── */
-.screen {
-  display: none;
-  width: 100%;
-  max-width: 760px;
-  animation: fadeUp 0.4s ease both;
-}
-.screen.active { display: block; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ── Layout ── */
+.shell {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 60px 24px 100px;
 }
 
-/* ─── Card ─── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 44px 48px;
-  position: relative;
-  overflow: hidden;
+/* ── Header ── */
+.site-header {
+  text-align: center;
+  margin-bottom: 56px;
+  animation: fadeDown 0.6s var(--ease) both;
 }
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-
-/* ─── Typography ─── */
-.eyebrow {
-  font-size: 11px;
-  letter-spacing: 3px;
+.site-header .label {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 16px;
   font-weight: 500;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--gold-light);
+  padding-bottom: 8px;
 }
-h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(24px, 4vw, 36px);
-  line-height: 1.25;
-  color: var(--text);
-  margin-bottom: 12px;
-}
-h1 em { font-style: italic; color: var(--gold); }
-.subtitle {
-  font-size: 15px;
-  color: var(--muted);
-  line-height: 1.6;
-  margin-bottom: 28px;
-}
-p { line-height: 1.7; color: var(--muted); font-size: 14px; }
-.text-body { color: var(--text); font-size: 15px; }
-
-/* ─── Divider ─── */
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 28px 0;
-}
-
-/* ─── Consent box ─── */
-.consent-box {
-  background: rgba(201,168,76,0.05);
-  border: 1px solid var(--gold-dim);
-  border-radius: 8px;
-  padding: 20px 24px;
-  margin-bottom: 24px;
-}
-.consent-box p { color: var(--text); font-size: 14px; }
-
-/* ─── Checkbox ─── */
-.check-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
+.site-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(30px, 5vw, 46px);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--ink);
   margin-bottom: 16px;
-  cursor: pointer;
 }
-.check-row input[type=checkbox] {
-  width: 18px; height: 18px;
-  accent-color: var(--gold);
-  flex-shrink: 0;
-  margin-top: 2px;
-  cursor: pointer;
-}
-.check-row span { font-size: 14px; color: var(--text); line-height: 1.5; }
-
-/* ─── Buttons ─── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 28px;
-  border-radius: 8px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  border: none;
-  transition: var(--transition);
-  letter-spacing: 0.3px;
-}
-.btn-primary {
-  background: var(--gold);
-  color: #0e0e10;
-}
-.btn-primary:hover { background: #dbb85a; transform: translateY(-1px); }
-.btn-primary:disabled { background: var(--gold-dim); color: #555; cursor: not-allowed; transform: none; }
-.btn-ghost {
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid var(--border);
-}
-.btn-ghost:hover { border-color: var(--gold-dim); color: var(--text); }
-.btn-sm { padding: 8px 18px; font-size: 13px; }
-
-/* ─── Inputs ─── */
-.field { margin-bottom: 20px; }
-.field label {
-  display: block;
-  font-size: 12px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+.site-header h1 em {
+  font-style: italic;
   color: var(--gold);
-  margin-bottom: 8px;
-  font-weight: 500;
 }
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
-  background: #0e0e10;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px 16px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+.site-header p {
   font-size: 14px;
-  transition: border-color var(--transition);
-  outline: none;
-  appearance: none;
+  color: var(--ink-light);
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto;
 }
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  border-color: var(--gold-dim);
-  box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
-}
-.field select { cursor: pointer; }
-.field select option { background: #16161a; }
-.field textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 
-/* ─── Progress bar ─── */
-.progress-wrap {
-  margin-bottom: 32px;
+/* ── Progress ── */
+.progress-bar-wrap {
+  margin-bottom: 48px;
+  animation: fadeDown 0.6s 0.1s var(--ease) both;
 }
-.progress-label {
+.progress-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  color: var(--muted);
+  font-size: 11px;
+  color: var(--ink-light);
   margin-bottom: 8px;
+  letter-spacing: 0.5px;
 }
-.progress-bar {
-  height: 3px;
+.progress-track {
+  height: 2px;
   background: var(--border);
-  border-radius: 2px;
+  border-radius: 1px;
   overflow: hidden;
 }
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
-  border-radius: 2px;
-  transition: width 0.5s ease;
+  background: linear-gradient(90deg, var(--gold-light), var(--gold));
+  border-radius: 1px;
+  transition: width 0.5s var(--ease);
 }
 
-/* ─── Chat / interview ─── */
-.chat-history {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-bottom: 28px;
-  max-height: 480px;
-  overflow-y: auto;
-  padding-right: 4px;
-  scroll-behavior: smooth;
-}
-.chat-history::-webkit-scrollbar { width: 4px; }
-.chat-history::-webkit-scrollbar-track { background: transparent; }
-.chat-history::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-.msg {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.msg-label {
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  font-weight: 500;
-}
-.msg-interviewer .msg-label { color: var(--gold); }
-.msg-participant .msg-label { color: var(--accent); }
-
-.msg-bubble {
-  padding: 14px 18px;
-  border-radius: 10px;
-  font-size: 14px;
-  line-height: 1.65;
-  max-width: 92%;
-}
-.msg-interviewer .msg-bubble {
-  background: rgba(201,168,76,0.07);
-  border: 1px solid rgba(201,168,76,0.15);
-  color: var(--text);
-  align-self: flex-start;
-}
-.msg-participant .msg-bubble {
-  background: rgba(74,143,168,0.08);
-  border: 1px solid rgba(74,143,168,0.15);
-  color: var(--text);
-  align-self: flex-end;
-}
-
-/* typing indicator */
-.typing {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 14px 18px;
-  background: rgba(201,168,76,0.07);
-  border: 1px solid rgba(201,168,76,0.15);
-  border-radius: 10px;
-  width: fit-content;
-}
-.typing span {
-  width: 6px; height: 6px;
-  background: var(--gold);
-  border-radius: 50%;
-  animation: blink 1.2s infinite;
-}
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes blink {
-  0%,80%,100% { opacity: 0.2; transform: scale(0.8); }
-  40% { opacity: 1; transform: scale(1); }
-}
-
-/* ─── Answer input zone ─── */
-.answer-zone {
+/* ── Cards ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px 44px;
+  margin-bottom: 20px;
+  animation: fadeUp 0.5s var(--ease) both;
   position: relative;
 }
-.answer-zone textarea {
+.card::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 2px;
+  background: var(--gold);
+  border-radius: 1px;
+  opacity: 0.4;
+}
+
+/* ── Question ── */
+.q-number {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.q-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 3vw, 24px);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.q-hint {
+  font-size: 13px;
+  color: var(--ink-light);
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+/* ── Inputs ── */
+textarea, input[type=text], select {
   width: 100%;
-  min-height: 110px;
-  background: #0e0e10;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 16px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  outline: none;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
   line-height: 1.6;
   resize: vertical;
-  outline: none;
-  transition: border-color var(--transition);
 }
-.answer-zone textarea:focus { border-color: var(--gold-dim); box-shadow: 0 0 0 3px rgba(201,168,76,0.08); }
-.answer-zone textarea::placeholder { color: var(--muted); }
+textarea { min-height: 120px; }
+textarea:focus, input:focus, select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(154, 124, 62, 0.08);
+  background: var(--white);
+}
+textarea::placeholder, input::placeholder { color: #b5b2ac; }
+select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a7c3e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+select option { background: white; }
 
-.send-row {
+/* Profile grid */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.field label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+@media (max-width: 520px) { .profile-grid { grid-template-columns: 1fr; } .card { padding: 28px 20px; } }
+
+/* ── Scale buttons ── */
+.scale-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.scale-btn {
+  flex: 1;
+  min-width: 44px;
+  padding: 10px 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: var(--radius);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  color: var(--ink-light);
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+  text-align: center;
+}
+.scale-btn:hover { border-color: var(--gold-light); color: var(--ink); }
+.scale-btn.selected {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: white;
+  font-weight: 500;
+}
+.scale-labels {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 12px;
-}
-.char-count { font-size: 12px; color: var(--muted); }
-
-/* ─── Tags (covered themes) ─── */
-.theme-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
-}
-.tag {
-  padding: 4px 12px;
-  border-radius: 20px;
   font-size: 11px;
-  letter-spacing: 0.5px;
+  color: var(--ink-light);
+  margin-top: 6px;
+  padding: 0 2px;
+}
+
+/* ── Checkbox multi ── */
+.check-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
   border: 1px solid var(--border);
-  color: var(--muted);
-  background: transparent;
-  transition: var(--transition);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+  background: var(--bg);
+  font-size: 13px;
+  color: var(--ink);
+  user-select: none;
 }
-.tag.covered {
-  border-color: var(--gold-dim);
-  color: var(--gold);
-  background: rgba(201,168,76,0.06);
-}
-
-/* ─── API key screen ─── */
-.api-hint {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 8px;
-  line-height: 1.6;
-}
-.api-hint a { color: var(--gold-dim); }
-
-/* ─── Final / Thank you ─── */
-.big-check {
-  width: 64px; height: 64px;
-  border-radius: 50%;
-  background: rgba(201,168,76,0.1);
-  border: 2px solid var(--gold-dim);
+.check-item:hover { border-color: var(--gold-light); background: var(--gold-pale); }
+.check-item.selected { border-color: var(--gold); background: var(--gold-pale); color: var(--ink); }
+.check-item input { display: none; }
+.check-dot {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  flex-shrink: 0;
+  transition: all 0.18s var(--ease);
   display: flex; align-items: center; justify-content: center;
-  font-size: 28px;
-  margin: 0 auto 28px;
 }
-.export-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.check-item.selected .check-dot {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.check-item.selected .check-dot::after {
+  content: '✓';
+  font-size: 10px;
+  color: white;
+  font-weight: 700;
+}
+@media (max-width: 480px) { .check-grid { grid-template-columns: 1fr; } }
 
-/* ─── Admin panel ─── */
-.admin-interview {
-  background: #0e0e10;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 20px;
+/* ── Consent ── */
+.consent-block {
+  background: var(--gold-pale);
+  border: 1px solid var(--gold-light);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin-bottom: 28px;
+}
+.consent-block p {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.75;
+  margin-bottom: 12px;
+}
+.consent-block p:last-child { margin-bottom: 0; }
+.consent-block strong { color: var(--ink); font-weight: 500; }
+
+.consent-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  margin-bottom: 28px;
+}
+.consent-check input { width: 17px; height: 17px; accent-color: var(--gold); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+.consent-check span { font-size: 14px; color: var(--ink); line-height: 1.5; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 32px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.btn-primary { background: var(--ink); color: white; }
+.btn-primary:hover { background: #2d2a24; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,24,20,0.15); }
+.btn-primary:disabled { background: var(--border); color: var(--ink-light); cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-ghost { background: transparent; color: var(--ink-light); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--ink-light); color: var(--ink); }
+.btn-gold { background: var(--gold); color: white; }
+.btn-gold:hover { background: #876d35; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(154,124,62,0.25); }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+.nav-row-end { display: flex; justify-content: flex-end; margin-top: 28px; }
+
+/* ── Thank you screen ── */
+.thanks-wrap {
+  text-align: center;
+  padding: 60px 20px;
+}
+.thanks-icon {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-light);
+  background: var(--gold-pale);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+  margin: 0 auto 32px;
+}
+.thanks-wrap h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px;
+  font-weight: 300;
   margin-bottom: 16px;
+  color: var(--ink);
 }
-.admin-interview h3 { font-size: 14px; color: var(--gold); margin-bottom: 8px; }
-.admin-interview .meta { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
-.admin-qa { margin-bottom: 10px; }
-.admin-qa .q { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 4px; }
-.admin-qa .a { font-size: 14px; color: var(--text); }
+.thanks-wrap h2 em { font-style: italic; color: var(--gold); }
+.thanks-wrap p { font-size: 15px; color: var(--ink-light); line-height: 1.7; max-width: 460px; margin: 0 auto 32px; }
+.export-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-/* ─── Responsive ─── */
-@media (max-width: 600px) {
-  .card { padding: 28px 20px; }
-  .export-actions { flex-direction: column; }
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── Utility ─── */
-.hidden { display: none !important; }
-.text-center { text-align: center; }
-.mt-8 { margin-top: 8px; }
-.mt-16 { margin-top: 16px; }
-.mt-24 { margin-top: 24px; }
-.row { display: flex; gap: 12px; align-items: center; }
-.flex-1 { flex: 1; }
-.error-msg { font-size: 13px; color: var(--danger); margin-top: 8px; }
+/* ── Screens ── */
+.screen { display: none; }
+.screen.active { display: block; }
 
-/* Language switcher */
-.lang-switch {
+/* ── Lang toggle ── */
+.lang-toggle {
   position: fixed;
   top: 16px; right: 16px;
   display: flex;
-  gap: 4px;
-  background: var(--surface);
+  background: white;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 4px;
+  border-radius: 20px;
+  overflow: hidden;
   z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
-.lang-btn {
-  padding: 4px 10px;
-  border-radius: 4px;
+.lang-toggle button {
+  padding: 6px 14px;
   border: none;
   background: transparent;
-  color: var(--muted);
+  font-family: 'Outfit', sans-serif;
   font-size: 12px;
   font-weight: 500;
+  color: var(--ink-light);
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.15s;
 }
-.lang-btn.active {
-  background: var(--gold);
-  color: #0e0e10;
+.lang-toggle button.active { background: var(--ink); color: white; }
+
+/* ── Estimated time badge ── */
+.time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gold-pale);
+  border: 1px solid var(--gold-light);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: var(--gold);
+  font-weight: 500;
+  margin-top: 16px;
 }
+
+/* error */
+.err { font-size: 12px; color: #b05050; margin-top: 8px; }
 </style>
 </head>
 <body>
 
-<!-- Language switcher -->
-<div class="lang-switch">
-  <button class="lang-btn active" onclick="setLang('en')">EN</button>
-  <button class="lang-btn" onclick="setLang('fr')">FR</button>
+<div class="lang-toggle">
+  <button onclick="setLang('en')" id="lb-en" class="active">EN</button>
+  <button onclick="setLang('fr')" id="lb-fr">FR</button>
 </div>
 
-<!-- ════════════════════════════════════════
-     SCREEN 0 — API KEY SETUP
-     ════════════════════════════════════════ -->
-<div class="screen active" id="screen-api">
-  <div class="card">
-    <div class="eyebrow" data-i18n="api.eyebrow">Researcher Setup</div>
-    <h1 data-i18n="api.title">Configure the <em>Interview Tool</em></h1>
-    <p class="subtitle" data-i18n="api.subtitle">Enter your Anthropic API key and Firebase credentials to activate the adaptive interview engine. This screen is only for the researcher — participants never see it.</p>
+<div class="shell">
 
-    <div class="divider"></div>
+<!-- ══════════════════════════════════
+     SCREEN 0 — WELCOME + CONSENT
+     ══════════════════════════════════ -->
+<div class="screen active" id="s-welcome">
 
-    <div class="field">
-      <label data-i18n="api.keyLabel">Anthropic API Key</label>
-      <input type="password" id="inp-apikey" placeholder="sk-ant-api03-..." autocomplete="off">
-      <p class="api-hint" data-i18n="api.keyHint">Your key stays in memory only — never sent anywhere except api.anthropic.com. Get yours at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.</p>
-    </div>
-
-    <div class="field">
-      <label data-i18n="api.fbLabel">Firebase Config (JSON)</label>
-      <textarea id="inp-fbconfig" rows="6" placeholder='{"apiKey":"...","authDomain":"...","projectId":"..."}'></textarea>
-      <p class="api-hint" data-i18n="api.fbHint">Paste your Firebase project config object. Leave empty to disable cloud saving (JSON export only).</p>
-    </div>
-
-    <div id="api-error" class="error-msg hidden"></div>
-    <div class="mt-24">
-      <button class="btn btn-primary" onclick="initApp()" data-i18n="api.btn">Activate Interview Tool →</button>
-    </div>
+  <div class="site-header">
+    <div class="label" data-t="welcome.label">Master's Dissertation · 2025</div>
+    <h1 data-t="welcome.h1">AI & Supply Chain<br>in <em>Luxury</em></h1>
+    <p data-t="welcome.p">A short written interview for professionals in supply chain, operations, and related functions. Your answers directly feed academic research.</p>
+    <div class="time-badge">⏱ <span data-t="welcome.time">Approximately 10–12 minutes</span></div>
   </div>
-</div>
 
-<!-- ════════════════════════════════════════
-     SCREEN 1 — WELCOME
-     ════════════════════════════════════════ -->
-<div class="screen" id="screen-welcome">
   <div class="card">
-    <div class="eyebrow" data-i18n="welcome.eyebrow">Master's Dissertation Research — 2025</div>
-    <h1 data-i18n="welcome.title">AI & Supply Chain in <em>Luxury</em></h1>
-    <p class="subtitle" data-i18n="welcome.subtitle">
-      This tool conducts a written semi-structured interview as part of academic research on how artificial intelligence is transforming supply chain management in the luxury sector.
-    </p>
-
-    <div class="consent-box">
-      <p data-i18n="welcome.consent1"><strong>Confidentiality.</strong> All responses are anonymised and used exclusively for academic research purposes. No personal identifying information will be published.</p>
-      <div class="divider" style="margin:16px 0"></div>
-      <p data-i18n="welcome.consent2"><strong>Format.</strong> This is not a fixed questionnaire. An AI research assistant will read each of your answers and ask relevant follow-up questions — like a real interview, but written. The session takes approximately 15–25 minutes.</p>
-      <div class="divider" style="margin:16px 0"></div>
-      <p data-i18n="welcome.consent3"><strong>Voluntary.</strong> You may stop at any time. There are no right or wrong answers — your professional experience and perspective are what matter.</p>
+    <div class="consent-block">
+      <p><strong data-t="consent.c1title">Confidentiality.</strong> <span data-t="consent.c1">All responses are fully anonymised. No identifying information will be published. Data is used solely for academic purposes.</span></p>
+      <p><strong data-t="consent.c2title">Format.</strong> <span data-t="consent.c2">8 questions — open text + a few quick selections. There are no right or wrong answers. Your professional experience is what matters.</span></p>
+      <p><strong data-t="consent.c3title">Voluntary.</strong> <span data-t="consent.c3">You may stop at any time. Your responses are saved locally and exported only when you click "Download" at the end.</span></p>
     </div>
 
-    <label class="check-row" id="consent-row">
+    <label class="consent-check">
       <input type="checkbox" id="chk-consent">
-      <span data-i18n="welcome.checkLabel">I understand the above and I consent to participate in this research interview.</span>
+      <span data-t="consent.check">I understand the above and I agree to participate in this research.</span>
     </label>
 
-    <div class="mt-16">
-      <button class="btn btn-primary" id="btn-welcome-next" disabled onclick="goTo('screen-profile')" data-i18n="welcome.btn">Begin Interview →</button>
-    </div>
+    <button class="btn btn-primary" id="btn-start" disabled onclick="startSurvey()" data-t="welcome.btn">Begin → </button>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     SCREEN 2 — PROFILE
-     ════════════════════════════════════════ -->
-<div class="screen" id="screen-profile">
-  <div class="card">
-    <div class="eyebrow" data-i18n="profile.eyebrow">Step 1 of 2 — Participant Profile</div>
-    <h1 data-i18n="profile.title">About <em>You</em></h1>
-    <p class="subtitle" data-i18n="profile.subtitle">A few quick profile questions before the interview begins. This helps contextualise your answers.</p>
-
-    <div class="field">
-      <label data-i18n="profile.role">Job Title / Role</label>
-      <input type="text" id="p-role" placeholder="e.g. Supply Chain Director, Logistics Manager…">
-    </div>
-
-    <div class="field">
-      <label data-i18n="profile.sector">Industry / Sector</label>
-      <select id="p-sector">
-        <option value="" data-i18n="profile.sectorPlaceholder">— Select —</option>
-        <option value="Luxury Fashion & Leather Goods" data-i18n="profile.s1">Luxury Fashion & Leather Goods</option>
-        <option value="Luxury Cosmetics & Perfumes" data-i18n="profile.s2">Luxury Cosmetics & Perfumes</option>
-        <option value="Luxury Watches & Jewellery" data-i18n="profile.s3">Luxury Watches & Jewellery</option>
-        <option value="Luxury Wines & Spirits" data-i18n="profile.s4">Luxury Wines & Spirits</option>
-        <option value="Luxury Hospitality & Travel" data-i18n="profile.s5">Luxury Hospitality & Travel</option>
-        <option value="Premium / High-End Retail" data-i18n="profile.s6">Premium / High-End Retail</option>
-        <option value="Automotive (Premium / Luxury)" data-i18n="profile.s7">Automotive (Premium / Luxury)</option>
-        <option value="Consulting / Advisory" data-i18n="profile.s8">Consulting / Advisory (Supply Chain)</option>
-        <option value="Technology / AI Solutions" data-i18n="profile.s9">Technology / AI Solutions (for Supply Chain)</option>
-        <option value="Other" data-i18n="profile.s10">Other</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label data-i18n="profile.company">Company Size</label>
-      <select id="p-size">
-        <option value="" data-i18n="profile.sectorPlaceholder">— Select —</option>
-        <option value="<50 employees">&lt; 50 employees</option>
-        <option value="50–250 employees">50–250 employees</option>
-        <option value="250–1000 employees">250–1,000 employees</option>
-        <option value="1000–5000 employees">1,000–5,000 employees</option>
-        <option value=">5000 employees">&gt; 5,000 employees</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label data-i18n="profile.aiLevel">Your Familiarity with AI</label>
-      <select id="p-ai">
-        <option value="" data-i18n="profile.sectorPlaceholder">— Select —</option>
-        <option value="No experience" data-i18n="profile.ai1">No experience — I'm not involved in AI topics</option>
-        <option value="Aware" data-i18n="profile.ai2">Aware — I know AI is used but I'm not directly involved</option>
-        <option value="Involved" data-i18n="profile.ai3">Involved — I work on or alongside AI projects</option>
-        <option value="Expert" data-i18n="profile.ai4">Expert — AI is a core part of my role</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label data-i18n="profile.scRole">Level of Involvement in Supply Chain Decisions</label>
-      <select id="p-sc">
-        <option value="" data-i18n="profile.sectorPlaceholder">— Select —</option>
-        <option value="Operational" data-i18n="profile.sc1">Operational — day-to-day execution</option>
-        <option value="Tactical" data-i18n="profile.sc2">Tactical — planning & coordination</option>
-        <option value="Strategic" data-i18n="profile.sc3">Strategic — decision-making & direction</option>
-        <option value="Cross-functional" data-i18n="profile.sc4">Cross-functional — across multiple levels</option>
-      </select>
-    </div>
-
-    <div id="profile-error" class="error-msg hidden" data-i18n="profile.error">Please complete all fields before continuing.</div>
-
-    <div class="mt-24 row">
-      <button class="btn btn-ghost btn-sm" onclick="goTo('screen-welcome')" data-i18n="common.back">← Back</button>
-      <button class="btn btn-primary" onclick="startInterview()" data-i18n="profile.btn">Start Interview →</button>
-    </div>
+<!-- ══════════════════════════════════
+     SCREEN 1 — PROFILE
+     ══════════════════════════════════ -->
+<div class="screen" id="s-profile">
+  <div class="site-header" style="margin-bottom:32px">
+    <div class="label" data-t="profile.label">Your Profile</div>
+    <h1 style="font-size:clamp(24px,4vw,36px)" data-t="profile.h1">A few words <em>about you</em></h1>
   </div>
-</div>
 
-<!-- ════════════════════════════════════════
-     SCREEN 3 — INTERVIEW
-     ════════════════════════════════════════ -->
-<div class="screen" id="screen-interview">
+  <div class="progress-bar-wrap">
+    <div class="progress-meta"><span data-t="progress.label">Progress</span><span id="prog-text">Profile</span></div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:5%"></div></div>
+  </div>
+
   <div class="card">
-    <div class="progress-wrap">
-      <div class="progress-label">
-        <span data-i18n="interview.progress">Interview progress</span>
-        <span id="prog-count">0 / 12</span>
+    <div class="profile-grid">
+      <div class="field">
+        <label data-t="profile.role">Job Title / Role</label>
+        <input type="text" id="p-role" placeholder="e.g. Supply Chain Manager">
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
-    </div>
-
-    <div class="chat-history" id="chat-history"></div>
-
-    <div class="answer-zone" id="answer-zone">
-      <textarea id="answer-input" placeholder="" data-i18n-placeholder="interview.placeholder" maxlength="3000"></textarea>
-      <div class="send-row">
-        <span class="char-count"><span id="char-used">0</span> / 3000</span>
-        <div class="row">
-          <button class="btn btn-ghost btn-sm" id="btn-skip" onclick="skipQuestion()" data-i18n="interview.skip">Skip question</button>
-          <button class="btn btn-primary" id="btn-send" onclick="sendAnswer()" data-i18n="interview.send">Send →</button>
-        </div>
+      <div class="field">
+        <label data-t="profile.sector">Sector</label>
+        <select id="p-sector">
+          <option value="" data-t="profile.select">— Select —</option>
+          <option value="Luxury Fashion & Leather Goods">Luxury Fashion & Leather Goods</option>
+          <option value="Luxury Cosmetics & Perfumes">Luxury Cosmetics & Perfumes</option>
+          <option value="Luxury Watches & Jewellery">Luxury Watches & Jewellery</option>
+          <option value="Luxury Wines & Spirits">Luxury Wines & Spirits</option>
+          <option value="Premium / High-End Retail">Premium / High-End Retail</option>
+          <option value="Automotive (Premium / Luxury)">Automotive (Premium / Luxury)</option>
+          <option value="Consulting / Advisory">Consulting / Advisory</option>
+          <option value="Technology (SC / AI)">Technology (SC / AI)</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label data-t="profile.size">Company Size</label>
+        <select id="p-size">
+          <option value="" data-t="profile.select">— Select —</option>
+          <option value="<50">&lt; 50 employees</option>
+          <option value="50–250">50–250</option>
+          <option value="250–1000">250–1,000</option>
+          <option value="1000–5000">1,000–5,000</option>
+          <option value=">5000">&gt; 5,000</option>
+        </select>
+      </div>
+      <div class="field">
+        <label data-t="profile.sc">SC Involvement</label>
+        <select id="p-sc">
+          <option value="" data-t="profile.select">— Select —</option>
+          <option value="Operational">Operational</option>
+          <option value="Tactical">Tactical / Planning</option>
+          <option value="Strategic">Strategic</option>
+          <option value="Cross-functional">Cross-functional</option>
+        </select>
       </div>
     </div>
-
-    <div class="mt-16">
-      <div class="theme-tags" id="theme-tags"></div>
+    <div class="err hidden" id="profile-err" data-t="profile.err">Please fill in all fields.</div>
+    <div class="nav-row-end">
+      <button class="btn btn-primary" onclick="goQ(0)" data-t="profile.btn">Continue →</button>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
+<!-- ══════════════════════════════════
+     SCREEN 2 — QUESTIONS (rendered dynamically)
+     ══════════════════════════════════ -->
+<div class="screen" id="s-questions">
+  <div class="progress-bar-wrap">
+    <div class="progress-meta">
+      <span data-t="progress.label">Progress</span>
+      <span id="q-prog-text">1 / 8</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="q-prog-fill" style="width:10%"></div></div>
+  </div>
+  <div id="q-mount"></div>
+</div>
+
+<!-- ══════════════════════════════════
      SCREEN 4 — THANK YOU
-     ════════════════════════════════════════ -->
-<div class="screen" id="screen-thanks">
-  <div class="card text-center">
-    <div class="big-check">✦</div>
-    <div class="eyebrow" data-i18n="thanks.eyebrow">Interview Complete</div>
-    <h1 data-i18n="thanks.title">Thank <em>You</em></h1>
-    <p class="subtitle" data-i18n="thanks.subtitle">Your contribution is genuinely valuable for this research. Your answers have been saved and will be analysed as part of a Master's dissertation on AI and supply chain transformation in the luxury sector.</p>
-    <p data-i18n="thanks.contact">If you have any questions about this research, please contact the researcher directly.</p>
+     ══════════════════════════════════ -->
+<div class="screen" id="s-thanks">
+  <div class="thanks-wrap">
+    <div class="thanks-icon">✦</div>
+    <h2 data-t="thanks.h2">Thank <em>you</em></h2>
+    <p data-t="thanks.p">Your responses have been recorded. They will be analysed as part of a Master's dissertation on AI and supply chain transformation in the luxury sector. Your contribution is genuinely appreciated.</p>
+    <div id="email-status" style="margin:20px auto;max-width:420px;padding:12px 20px;border-radius:6px;font-size:14px;min-height:20px;color:var(--ink-light)"></div>
 
-    <div class="export-actions" style="justify-content:center">
-      <button class="btn btn-primary" onclick="exportJSON()" data-i18n="thanks.exportJSON">Download JSON transcript</button>
-      <button class="btn btn-ghost" onclick="exportCSV()" data-i18n="thanks.exportCSV">Download CSV</button>
+    <div class="export-row">
+      <button class="btn btn-primary" onclick="exportJSON()" data-t="thanks.json">↓ Download JSON</button>
+      <button class="btn btn-ghost" onclick="exportCSV()" data-t="thanks.csv">↓ Download CSV</button>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     ADMIN PANEL (hidden by default)
-     Access: add ?admin=1 to URL
-     ════════════════════════════════════════ -->
-<div class="screen" id="screen-admin">
-  <div class="card">
-    <div class="eyebrow">Admin Panel</div>
-    <h1>Interview <em>Transcripts</em></h1>
-    <p class="subtitle">Review all completed interviews stored in Firebase.</p>
-    <div class="divider"></div>
-    <div id="admin-list"><p style="color:var(--muted)">Loading interviews…</p></div>
-    <div class="mt-16">
-      <button class="btn btn-ghost btn-sm" onclick="exportAllCSV()">Export all as CSV</button>
-    </div>
-  </div>
-</div>
+</div><!-- /shell -->
 
 <script>
-/* ════════════════════════════════════════════════════════════
-   INTERNATIONALISATION
-   ════════════════════════════════════════════════════════════ */
-const i18n = {
+/* ═══════════════════════════════════════════════════
+   i18n
+═══════════════════════════════════════════════════ */
+const T = {
   en: {
-    "api.eyebrow": "Researcher Setup",
-    "api.title": "Configure the Interview Tool",
-    "api.subtitle": "Enter your Anthropic API key and Firebase credentials to activate the adaptive interview engine. This screen is only for the researcher — participants never see it.",
-    "api.keyLabel": "Anthropic API Key",
-    "api.keyHint": "Your key stays in memory only — never sent anywhere except api.anthropic.com.",
-    "api.fbLabel": "Firebase Config (JSON)",
-    "api.fbHint": "Paste your Firebase project config object. Leave empty to disable cloud saving.",
-    "api.btn": "Activate Interview Tool →",
-    "welcome.eyebrow": "Master's Dissertation Research — 2025",
-    "welcome.title": "AI & Supply Chain in Luxury",
-    "welcome.subtitle": "This tool conducts a written semi-structured interview as part of academic research on how artificial intelligence is transforming supply chain management in the luxury sector.",
-    "welcome.consent1": "<strong>Confidentiality.</strong> All responses are anonymised and used exclusively for academic research purposes. No personal identifying information will be published.",
-    "welcome.consent2": "<strong>Format.</strong> This is not a fixed questionnaire. An AI research assistant will read each of your answers and ask relevant follow-up questions — like a real interview, but written. The session takes approximately 15–25 minutes.",
-    "welcome.consent3": "<strong>Voluntary.</strong> You may stop at any time. There are no right or wrong answers — your professional experience and perspective are what matter.",
-    "welcome.checkLabel": "I understand the above and I consent to participate in this research interview.",
-    "welcome.btn": "Begin Interview →",
-    "profile.eyebrow": "Step 1 of 2 — Participant Profile",
-    "profile.title": "About You",
-    "profile.subtitle": "A few quick profile questions before the interview begins.",
+    "welcome.label": "Master's Dissertation · 2025",
+    "welcome.h1": "AI & Supply Chain<br>in <em>Luxury</em>",
+    "welcome.p": "A short written interview for professionals in supply chain, operations, and related functions. Your answers directly feed academic research.",
+    "welcome.time": "Approximately 10–12 minutes",
+    "welcome.btn": "Begin →",
+    "consent.c1title": "Confidentiality.",
+    "consent.c1": "All responses are fully anonymised. No identifying information will be published. Data is used solely for academic purposes.",
+    "consent.c2title": "Format.",
+    "consent.c2": "8 questions — open text + a few quick selections. There are no right or wrong answers. Your professional experience is what matters.",
+    "consent.c3title": "Voluntary.",
+    "consent.c3": "You may stop at any time. Your responses are saved locally and exported only when you click Download at the end.",
+    "consent.check": "I understand the above and I agree to participate in this research.",
+    "profile.label": "Your Profile",
+    "profile.h1": "A few words <em>about you</em>",
     "profile.role": "Job Title / Role",
-    "profile.sector": "Industry / Sector",
-    "profile.sectorPlaceholder": "— Select —",
-    "profile.company": "Company Size",
-    "profile.aiLevel": "Your Familiarity with AI",
-    "profile.scRole": "Level of Involvement in Supply Chain Decisions",
-    "profile.error": "Please complete all fields before continuing.",
-    "profile.btn": "Start Interview →",
-    "common.back": "← Back",
-    "interview.progress": "Interview progress",
-    "interview.placeholder": "Type your answer here… There is no right or wrong answer. Share your experience freely.",
-    "interview.skip": "Skip question",
-    "interview.send": "Send →",
-    "thanks.eyebrow": "Interview Complete",
-    "thanks.title": "Thank You",
-    "thanks.subtitle": "Your contribution is genuinely valuable for this research. Your answers have been saved and will be analysed as part of a Master's dissertation on AI and supply chain transformation in the luxury sector.",
-    "thanks.contact": "If you have any questions about this research, please contact the researcher directly.",
-    "thanks.exportJSON": "Download JSON transcript",
-    "thanks.exportCSV": "Download CSV",
+    "profile.sector": "Sector",
+    "profile.size": "Company Size",
+    "profile.sc": "SC Involvement",
+    "profile.select": "— Select —",
+    "profile.err": "Please fill in all fields.",
+    "profile.btn": "Continue →",
+    "progress.label": "Progress",
+    "thanks.h2": "Thank <em>you</em>",
+    "thanks.p": "Your responses have been recorded. They will be analysed as part of a Master's dissertation on AI and supply chain transformation in the luxury sector. Your contribution is genuinely appreciated.",
+    "thanks.json": "↓ Download JSON",
+    "thanks.csv": "↓ Download CSV",
   },
   fr: {
-    "api.eyebrow": "Configuration chercheur",
-    "api.title": "Configurer l'outil d'entretien",
-    "api.subtitle": "Saisissez votre clé API Anthropic et la configuration Firebase pour activer le moteur d'entretien adaptatif. Cet écran est réservé au chercheur — les participants ne le voient jamais.",
-    "api.keyLabel": "Clé API Anthropic",
-    "api.keyHint": "Votre clé reste en mémoire uniquement — jamais transmise ailleurs qu'à api.anthropic.com.",
-    "api.fbLabel": "Config Firebase (JSON)",
-    "api.fbHint": "Collez votre objet de configuration Firebase. Laissez vide pour désactiver la sauvegarde cloud.",
-    "api.btn": "Activer l'outil d'entretien →",
-    "welcome.eyebrow": "Recherche de mémoire de Master — 2025",
-    "welcome.title": "IA & Supply Chain dans le Luxe",
-    "welcome.subtitle": "Cet outil conduit un entretien semi-structuré écrit dans le cadre d'une recherche académique sur la transformation de la supply chain par l'intelligence artificielle dans le secteur du luxe.",
-    "welcome.consent1": "<strong>Confidentialité.</strong> Toutes les réponses sont anonymisées et utilisées exclusivement à des fins de recherche académique. Aucune information personnelle identifiable ne sera publiée.",
-    "welcome.consent2": "<strong>Format.</strong> Il ne s'agit pas d'un questionnaire fixe. Un assistant de recherche IA lira chacune de vos réponses et posera des questions de suivi pertinentes — comme un vrai entretien, mais par écrit. La session dure environ 15 à 25 minutes.",
-    "welcome.consent3": "<strong>Volontaire.</strong> Vous pouvez vous arrêter à tout moment. Il n'y a pas de bonne ou mauvaise réponse — votre expérience professionnelle et votre point de vue sont ce qui compte.",
-    "welcome.checkLabel": "Je comprends ce qui précède et je consens à participer à cet entretien de recherche.",
-    "welcome.btn": "Commencer l'entretien →",
-    "profile.eyebrow": "Étape 1 sur 2 — Profil du participant",
-    "profile.title": "À votre sujet",
-    "profile.subtitle": "Quelques questions rapides de profil avant que l'entretien ne commence.",
+    "welcome.label": "Mémoire de Master · 2025",
+    "welcome.h1": "IA & Supply Chain<br>dans le <em>Luxe</em>",
+    "welcome.p": "Un court entretien écrit pour les professionnels de la supply chain, des opérations et fonctions connexes. Vos réponses alimentent directement une recherche académique.",
+    "welcome.time": "Environ 10–12 minutes",
+    "welcome.btn": "Commencer →",
+    "consent.c1title": "Confidentialité.",
+    "consent.c1": "Toutes les réponses sont entièrement anonymisées. Aucune information identifiable ne sera publiée. Les données sont utilisées uniquement à des fins académiques.",
+    "consent.c2title": "Format.",
+    "consent.c2": "8 questions — texte libre + quelques sélections rapides. Il n'y a pas de bonne ou mauvaise réponse. Votre expérience professionnelle est ce qui compte.",
+    "consent.c3title": "Volontaire.",
+    "consent.c3": "Vous pouvez vous arrêter à tout moment. Vos réponses sont sauvegardées localement et exportées uniquement lorsque vous cliquez sur Télécharger à la fin.",
+    "consent.check": "Je comprends ce qui précède et j'accepte de participer à cette recherche.",
+    "profile.label": "Votre Profil",
+    "profile.h1": "Quelques mots <em>sur vous</em>",
     "profile.role": "Intitulé de poste / Rôle",
-    "profile.sector": "Secteur d'activité",
-    "profile.sectorPlaceholder": "— Sélectionner —",
-    "profile.company": "Taille de l'entreprise",
-    "profile.aiLevel": "Votre familiarité avec l'IA",
-    "profile.scRole": "Niveau d'implication dans les décisions supply chain",
-    "profile.error": "Veuillez compléter tous les champs avant de continuer.",
-    "profile.btn": "Démarrer l'entretien →",
-    "common.back": "← Retour",
-    "interview.progress": "Progression de l'entretien",
-    "interview.placeholder": "Tapez votre réponse ici… Il n'y a pas de bonne ou mauvaise réponse. Partagez librement votre expérience.",
-    "interview.skip": "Passer la question",
-    "interview.send": "Envoyer →",
-    "thanks.eyebrow": "Entretien terminé",
-    "thanks.title": "Merci",
-    "thanks.subtitle": "Votre contribution est précieuse pour cette recherche. Vos réponses ont été enregistrées et seront analysées dans le cadre d'un mémoire de Master sur la transformation de la supply chain par l'IA dans le secteur du luxe.",
-    "thanks.contact": "Si vous avez des questions sur cette recherche, veuillez contacter directement le chercheur.",
-    "thanks.exportJSON": "Télécharger la transcription JSON",
-    "thanks.exportCSV": "Télécharger le CSV",
+    "profile.sector": "Secteur",
+    "profile.size": "Taille de l'entreprise",
+    "profile.sc": "Implication SC",
+    "profile.select": "— Sélectionner —",
+    "profile.err": "Veuillez remplir tous les champs.",
+    "profile.btn": "Continuer →",
+    "progress.label": "Progression",
+    "thanks.h2": "<em>Merci</em>",
+    "thanks.p": "Vos réponses ont été enregistrées. Elles seront analysées dans le cadre d'un mémoire de Master sur la transformation de la supply chain par l'IA dans le luxe. Votre contribution est sincèrement appréciée.",
+    "thanks.json": "↓ Télécharger JSON",
+    "thanks.csv": "↓ Télécharger CSV",
   }
 };
 
-let currentLang = 'en';
-
-function setLang(lang) {
-  currentLang = lang;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang.toUpperCase()));
-  applyI18n();
+let lang = 'en';
+function setLang(l) {
+  lang = l;
+  document.getElementById('lb-en').classList.toggle('active', l === 'en');
+  document.getElementById('lb-fr').classList.toggle('active', l === 'fr');
+  applyT();
+  if (currentQ >= 0) renderQ(currentQ); // re-render current question in new lang
+}
+function applyT() {
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const k = el.getAttribute('data-t');
+    if (T[lang][k] !== undefined) el.innerHTML = T[lang][k];
+  });
 }
 
-function applyI18n() {
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (i18n[currentLang][key]) el.innerHTML = i18n[currentLang][key];
-  });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    if (i18n[currentLang][key]) el.placeholder = i18n[currentLang][key];
-  });
-  // Update answer textarea placeholder
-  const ta = document.getElementById('answer-input');
-  if (ta) ta.placeholder = currentLang === 'fr'
-    ? 'Tapez votre réponse ici… Il n\'y a pas de bonne ou mauvaise réponse. Partagez librement votre expérience.'
-    : 'Type your answer here… There is no right or wrong answer. Share your experience freely.';
-}
+/* ═══════════════════════════════════════════════════
+   QUESTION BANK
+   8 questions covering all dissertation themes
+═══════════════════════════════════════════════════ */
+const QUESTIONS = [
+  // Q1 — AI current use (open)
+  {
+    id: 'q1_ai_use',
+    type: 'textarea',
+    en: {
+      q: 'How is artificial intelligence currently used in your organisation\'s supply chain activities?',
+      hint: 'If AI is not yet used, describe where you see the most potential. Feel free to give examples.'
+    },
+    fr: {
+      q: 'Comment l\'intelligence artificielle est-elle actuellement utilisée dans les activités supply chain de votre organisation ?',
+      hint: 'Si l\'IA n\'est pas encore utilisée, décrivez où vous voyez le plus de potentiel. N\'hésitez pas à donner des exemples.'
+    }
+  },
 
-/* ════════════════════════════════════════════════════════════
-   APP STATE
-   ════════════════════════════════════════════════════════════ */
-let state = {
-  apiKey: '',
-  firebaseApp: null,
-  db: null,
-  docRef: null,            // Firestore document reference
+  // Q2 — SC processes (multi-select + open)
+  {
+    id: 'q2_sc_processes',
+    type: 'multi_open',
+    en: {
+      q: 'Which supply chain processes are most impacted by AI in your organisation?',
+      hint: 'Select all that apply, then briefly describe the most significant impact.',
+      options: ['Demand forecasting','Inventory management','Procurement / Sourcing','Logistics & transport','Warehousing','Traceability','Customer service','Planning & S&OP'],
+      openLabel: 'In a few words, describe the most significant impact:'
+    },
+    fr: {
+      q: 'Quels processus supply chain sont les plus impactés par l\'IA dans votre organisation ?',
+      hint: 'Sélectionnez tout ce qui s\'applique, puis décrivez brièvement l\'impact le plus significatif.',
+      options: ['Prévision de la demande','Gestion des stocks','Achats / Sourcing','Logistique & transport','Entreposage','Traçabilité','Service client','Planification & S&OP'],
+      openLabel: 'En quelques mots, décrivez l\'impact le plus significatif :'
+    }
+  },
+
+  // Q3 — Motivations (scale + open)
+  {
+    id: 'q3_motivations',
+    type: 'scale_open',
+    en: {
+      q: 'What are the main motivations behind AI adoption in your supply chain?',
+      hint: 'Rate the importance of each driver, then add any motivation not listed.',
+      drivers: ['Cost reduction','Efficiency gains','Better forecasting','Improved traceability','Customer experience','Sustainability','Faster decision-making'],
+      openLabel: 'Any other key motivation?'
+    },
+    fr: {
+      q: 'Quelles sont les principales motivations derrière l\'adoption de l\'IA dans votre supply chain ?',
+      hint: 'Évaluez l\'importance de chaque levier, puis ajoutez toute motivation non listée.',
+      drivers: ['Réduction des coûts','Gains d\'efficacité','Meilleure prévision','Traçabilité améliorée','Expérience client','Durabilité','Décisions plus rapides'],
+      openLabel: 'Autre motivation clé ?'
+    }
+  },
+
+  // Q4 — Barriers (open)
+  {
+    id: 'q4_barriers',
+    type: 'textarea',
+    en: {
+      q: 'What are the main barriers or challenges you face when implementing AI in the supply chain?',
+      hint: 'For example: data quality, internal skills, costs, resistance to change, integration issues, ROI uncertainty…'
+    },
+    fr: {
+      q: 'Quels sont les principaux obstacles ou défis rencontrés lors de l\'implémentation de l\'IA dans la supply chain ?',
+      hint: 'Par exemple : qualité des données, compétences internes, coûts, résistance au changement, intégration, incertitude sur le ROI…'
+    }
+  },
+
+  // Q5 — Luxury specifics (open)
+  {
+    id: 'q5_luxury',
+    type: 'textarea',
+    en: {
+      q: 'How does the luxury context specifically shape your approach to AI in the supply chain?',
+      hint: 'Consider aspects such as craftsmanship, exclusivity, traceability, brand image, personalisation, or premium customer experience.'
+    },
+    fr: {
+      q: 'En quoi le contexte du luxe influence-t-il spécifiquement votre approche de l\'IA dans la supply chain ?',
+      hint: 'Pensez à des aspects tels que l\'artisanat, l\'exclusivité, la traçabilité, l\'image de marque, la personnalisation ou l\'expérience client premium.'
+    }
+  },
+
+  // Q6 — Transformation vs optimisation (scale + open)
+  {
+    id: 'q6_transformation',
+    type: 'single_scale_open',
+    en: {
+      q: 'In your view, is AI truly transforming supply chain management — or mainly optimising existing processes?',
+      hint: 'Position yourself on the scale, then briefly explain your view.',
+      scaleMin: 'Pure optimisation',
+      scaleMax: 'Deep transformation',
+      openLabel: 'Why? What is your reasoning?'
+    },
+    fr: {
+      q: 'Selon vous, l\'IA transforme-t-elle réellement le management de la supply chain — ou optimise-t-elle principalement les processus existants ?',
+      hint: 'Positionnez-vous sur l\'échelle, puis expliquez brièvement votre point de vue.',
+      scaleMin: 'Pure optimisation',
+      scaleMax: 'Transformation profonde',
+      openLabel: 'Pourquoi ? Quel est votre raisonnement ?'
+    }
+  },
+
+  // Q7 — Success factors (open)
+  {
+    id: 'q7_success',
+    type: 'textarea',
+    en: {
+      q: 'In your experience, what conditions are essential for AI to succeed in a supply chain context?',
+      hint: 'Think about leadership, data readiness, skills, organisational culture, governance, or strategic alignment.'
+    },
+    fr: {
+      q: 'Selon votre expérience, quelles conditions sont essentielles pour que l\'IA réussisse dans un contexte supply chain ?',
+      hint: 'Pensez au leadership, à la maturité des données, aux compétences, à la culture organisationnelle, à la gouvernance ou à l\'alignement stratégique.'
+    }
+  },
+
+  // Q8 — Future outlook (open)
+  {
+    id: 'q8_future',
+    type: 'textarea',
+    en: {
+      q: 'Looking ahead 3–5 years: how do you see the role of AI evolving in luxury supply chain management?',
+      hint: 'This is your chance to share a forward-looking perspective. There is no wrong answer.'
+    },
+    fr: {
+      q: 'Dans 3 à 5 ans : comment envisagez-vous l\'évolution du rôle de l\'IA dans le management de la supply chain du luxe ?',
+      hint: 'C\'est l\'occasion de partager une perspective prospective. Il n\'y a pas de mauvaise réponse.'
+    }
+  }
+];
+
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+const state = {
   sessionId: crypto.randomUUID(),
   startedAt: null,
   profile: {},
-  conversation: [],        // [{role:'interviewer'|'participant', content, timestamp}]
-  coveredThemes: [],
-  questionCount: 0,
-  maxQuestions: 12,
-  finished: false
+  answers: {}   // { q_id: value }
 };
 
-/* ════════════════════════════════════════════════════════════
-   RESEARCH THEMES — used to track coverage
-   ════════════════════════════════════════════════════════════ */
-const THEMES = [
-  { id: 'ai_current_use',    label: 'AI Current Use',        labelFr: 'Usage actuel de l\'IA' },
-  { id: 'sc_processes',      label: 'SC Processes',          labelFr: 'Processus SC' },
-  { id: 'motivations',       label: 'Motivations',           labelFr: 'Motivations' },
-  { id: 'barriers',          label: 'Barriers',              labelFr: 'Barrières' },
-  { id: 'luxury_specific',   label: 'Luxury Specifics',      labelFr: 'Spécificités luxe' },
-  { id: 'transformation',    label: 'Transformation vs Opt.', labelFr: 'Transformation vs Opt.' },
-  { id: 'success_factors',   label: 'Success Factors',       labelFr: 'Facteurs de succès' },
-  { id: 'future_outlook',    label: 'Future Outlook',        labelFr: 'Perspectives' },
-];
+let currentQ = -1;
 
-/* ════════════════════════════════════════════════════════════
-   SYSTEM PROMPT — the AI interviewer's instructions
-   ════════════════════════════════════════════════════════════ */
-function buildSystemPrompt() {
-  return `You are a highly skilled qualitative research interviewer conducting a written semi-structured interview for an academic Master's dissertation.
-
-DISSERTATION TOPIC:
-"How can the strategic implementation of artificial intelligence drive the transformation of supply chain management in the luxury sector?"
-
-RESEARCH THEMES TO COVER (track which ones have already been addressed):
-1. AI Current Use — Is AI already used in supply chain? What maturity level? Strategic or operational?
-2. Supply Chain Processes — Which SC processes are most affected? (forecasting, planning, inventory, logistics, procurement, warehousing, traceability, customer service)
-3. Motivations for Adoption — Why adopt AI? (efficiency, cost, visibility, forecasting, decision quality, traceability, customer experience)
-4. Barriers & Challenges — Data quality, skills gap, integration, resistance, budget, ROI uncertainty, governance, trust
-5. Luxury-Specific Issues — How AI interacts with: craftsmanship, exclusivity, personalization, rarity, brand image, traceability, premium customer experience
-6. Transformation vs Optimization — Does AI truly transform supply chain, or mainly optimize existing processes?
-7. Success Factors — What conditions enable successful AI adoption? (leadership, data readiness, skills, strategy alignment)
-8. Future Outlook — What does the participant expect in 3–5 years for AI in luxury supply chains?
-
-PARTICIPANT PROFILE:
-Role: ${state.profile.role}
-Sector: ${state.profile.sector}
-Company size: ${state.profile.size}
-AI familiarity: ${state.profile.ai}
-SC involvement level: ${state.profile.sc}
-
-CONVERSATION SO FAR:
-${state.conversation.map(m => `[${m.role.toUpperCase()}]: ${m.content}`).join('\n')}
-
-THEMES ALREADY COVERED: ${state.coveredThemes.join(', ') || 'none yet'}
-QUESTIONS ASKED SO FAR: ${state.questionCount}
-QUESTIONS REMAINING: ${state.maxQuestions - state.questionCount}
-
-YOUR TASK:
-Generate EXACTLY ONE next interview question. Follow these rules:
-
-CONTENT RULES:
-- Analyse the last answer carefully
-- If the answer mentioned something interesting, probe deeper (ask for an example, ask why, ask about impact)
-- If the answer was vague or too short, ask a gentle clarifying follow-up
-- If the answer was rich and a theme is now covered, move to the most relevant uncovered theme
-- Do NOT repeat questions or themes already well-covered
-- Prioritise luxury-specific questions when the participant's sector is luxury
-- Towards the end (last 2–3 questions), ask reflective or forward-looking questions
-- If themes are nearly all covered, ask a synthesis question ("Overall, would you say AI is transforming or mainly optimising supply chain in your organisation?")
-
-STYLE RULES:
-- Sound like a thoughtful human interviewer, not a chatbot
-- Be concise — one question at a time, never multiple questions in one message
-- Use natural academic language: "Could you tell me more about…", "You mentioned X — could you expand on…", "Why do you think…", "Would you say…", "Could you share a concrete example of…"
-- Never start with "Great!", "Excellent!", "Thank you for sharing" or other sycophantic openers
-- Keep it professional but warm
-- Respond in the SAME LANGUAGE as the participant's most recent answer (French or English)
-
-OUTPUT FORMAT:
-Return ONLY the question text. No preamble, no labels, no explanation. Just the question itself.
-
-ALSO: After the question, on a new line, write THEMES_COVERED: followed by a comma-separated list of theme IDs from this list that are now covered based on ALL answers so far: ai_current_use, sc_processes, motivations, barriers, luxury_specific, transformation, success_factors, future_outlook`;
-}
-
-/* ════════════════════════════════════════════════════════════
-   OPENING QUESTION — always asked first
-   ════════════════════════════════════════════════════════════ */
-function getOpeningQuestion() {
-  if (currentLang === 'fr') {
-    return `Pour commencer, pourriez-vous me décrire comment l'intelligence artificielle est actuellement utilisée dans les activités supply chain de votre organisation — ou, si elle ne l'est pas encore, quelle est votre perception de son potentiel dans votre contexte ?`;
-  }
-  return `To start, could you describe how artificial intelligence is currently being used in your organisation's supply chain activities — or, if it isn't yet, what is your perception of its potential in your context?`;
-}
-
-/* ════════════════════════════════════════════════════════════
-   SCREEN NAVIGATION
-   ════════════════════════════════════════════════════════════ */
-function goTo(screenId) {
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════ */
+function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(screenId).classList.add('active');
-  window.scrollTo(0,0);
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ════════════════════════════════════════════════════════════
-   INIT APP — validate API key & Firebase
-   ════════════════════════════════════════════════════════════ */
-async function initApp() {
-  const key = document.getElementById('inp-apikey').value.trim();
-  const fbRaw = document.getElementById('inp-fbconfig').value.trim();
-  const errEl = document.getElementById('api-error');
-  errEl.classList.add('hidden');
-
-  if (!key.startsWith('sk-ant-')) {
-    errEl.textContent = 'Invalid Anthropic API key format. It should start with sk-ant-';
-    errEl.classList.remove('hidden');
-    return;
-  }
-
-  state.apiKey = key;
-
-  // Optional Firebase init
-  if (fbRaw) {
-    try {
-      const fbConfig = JSON.parse(fbRaw);
-      const { initializeApp, getFirestore } = window._fbModules;
-      state.firebaseApp = initializeApp(fbConfig);
-      state.db = getFirestore(state.firebaseApp);
-      console.log('Firebase initialised:', fbConfig.projectId);
-    } catch(e) {
-      errEl.textContent = 'Firebase config invalid: ' + e.message;
-      errEl.classList.remove('hidden');
-      return;
-    }
-  }
-
-  // Check for admin panel
-  if (new URLSearchParams(window.location.search).get('admin') === '1') {
-    goTo('screen-admin');
-    loadAdminPanel();
-    return;
-  }
-
-  goTo('screen-welcome');
-}
-
-/* ════════════════════════════════════════════════════════════
-   CONSENT CHECKBOX
-   ════════════════════════════════════════════════════════════ */
+// Consent checkbox
 document.getElementById('chk-consent').addEventListener('change', function() {
-  document.getElementById('btn-welcome-next').disabled = !this.checked;
+  document.getElementById('btn-start').disabled = !this.checked;
 });
 
-/* ════════════════════════════════════════════════════════════
-   START INTERVIEW
-   ════════════════════════════════════════════════════════════ */
-async function startInterview() {
-  // Validate profile
-  const role = document.getElementById('p-role').value.trim();
-  const sector = document.getElementById('p-sector').value;
-  const size = document.getElementById('p-size').value;
-  const ai = document.getElementById('p-ai').value;
-  const sc = document.getElementById('p-sc').value;
-  const errEl = document.getElementById('profile-error');
-
-  if (!role || !sector || !size || !ai || !sc) {
-    errEl.classList.remove('hidden');
-    return;
-  }
-  errEl.classList.add('hidden');
-
-  state.profile = { role, sector, size, ai, sc };
+function startSurvey() {
   state.startedAt = new Date().toISOString();
+  showScreen('s-profile');
+}
 
-  // Create Firestore document
-  if (state.db) {
-    try {
-      const { collection, addDoc, serverTimestamp } = window._fbModules;
-      const docRef = await addDoc(collection(state.db, 'interviews'), {
-        sessionId: state.sessionId,
-        profile: state.profile,
-        startedAt: serverTimestamp(),
-        status: 'in_progress',
-        lang: currentLang
-      });
-      state.docRef = docRef;
-    } catch(e) { console.warn('Firebase save failed:', e); }
+function goQ(index) {
+  // Validate profile on first call
+  if (index === 0) {
+    const role = document.getElementById('p-role').value.trim();
+    const sector = document.getElementById('p-sector').value;
+    const size = document.getElementById('p-size').value;
+    const sc = document.getElementById('p-sc').value;
+    if (!role || !sector || !size || !sc) {
+      document.getElementById('profile-err').classList.remove('hidden');
+      return;
+    }
+    document.getElementById('profile-err').classList.add('hidden');
+    state.profile = { role, sector, size, sc };
+    showScreen('s-questions');
   }
 
-  goTo('screen-interview');
-  renderThemeTags();
+  // Save current answer before moving
+  if (currentQ >= 0) saveCurrentAnswer();
 
-  // Show opening question
-  const opening = getOpeningQuestion();
-  addMessage('interviewer', opening);
-  state.questionCount = 1;
+  currentQ = index;
+  renderQ(index);
   updateProgress();
 }
 
-/* ════════════════════════════════════════════════════════════
-   CHAT UI HELPERS
-   ════════════════════════════════════════════════════════════ */
-function addMessage(role, content) {
-  const history = document.getElementById('chat-history');
-
-  const msg = document.createElement('div');
-  msg.className = `msg msg-${role === 'interviewer' ? 'interviewer' : 'participant'}`;
-
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = role === 'interviewer'
-    ? (currentLang === 'fr' ? 'Interviewer' : 'Interviewer')
-    : (currentLang === 'fr' ? 'Vous' : 'You');
-
-  const bubble = document.createElement('div');
-  bubble.className = 'msg-bubble';
-  bubble.textContent = content;
-
-  msg.appendChild(label);
-  msg.appendChild(bubble);
-  history.appendChild(msg);
-
-  // Record to state
-  state.conversation.push({
-    role,
-    content,
-    timestamp: new Date().toISOString()
-  });
-
-  history.scrollTop = history.scrollHeight;
+function prevQ() {
+  saveCurrentAnswer();
+  if (currentQ > 0) { currentQ--; renderQ(currentQ); updateProgress(); }
+  else { showScreen('s-profile'); }
 }
 
-function showTyping() {
-  const history = document.getElementById('chat-history');
-  const typing = document.createElement('div');
-  typing.className = 'msg msg-interviewer';
-  typing.id = 'typing-indicator';
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = currentLang === 'fr' ? 'Interviewer' : 'Interviewer';
-  const indicator = document.createElement('div');
-  indicator.className = 'typing';
-  indicator.innerHTML = '<span></span><span></span><span></span>';
-  typing.appendChild(label);
-  typing.appendChild(indicator);
-  history.appendChild(typing);
-  history.scrollTop = history.scrollHeight;
-}
-
-function removeTyping() {
-  const el = document.getElementById('typing-indicator');
-  if (el) el.remove();
-}
-
-/* ════════════════════════════════════════════════════════════
-   SEND ANSWER
-   ════════════════════════════════════════════════════════════ */
-async function sendAnswer() {
-  const input = document.getElementById('answer-input');
-  const answer = input.value.trim();
-  if (!answer || state.finished) return;
-
-  // Disable UI during processing
-  document.getElementById('btn-send').disabled = true;
-  document.getElementById('btn-skip').disabled = true;
-  input.disabled = true;
-
-  addMessage('participant', answer);
-  input.value = '';
-  document.getElementById('char-used').textContent = '0';
-
-  showTyping();
-
-  try {
-    const nextQuestion = await callClaudeAPI();
-    removeTyping();
-
-    if (nextQuestion === '__END__' || state.questionCount >= state.maxQuestions) {
-      // End of interview
-      await finishInterview();
-    } else {
-      addMessage('interviewer', nextQuestion);
-      state.questionCount++;
-      updateProgress();
-    }
-  } catch(e) {
-    removeTyping();
-    addMessage('interviewer', currentLang === 'fr'
-      ? `Désolé, une erreur technique est survenue. Pourriez-vous reformuler ou réessayer ?`
-      : `Sorry, a technical issue occurred. Could you rephrase or try again?`);
-    console.error('Claude API error:', e);
+function nextQ() {
+  saveCurrentAnswer();
+  if (currentQ < QUESTIONS.length - 1) {
+    currentQ++;
+    renderQ(currentQ);
+    updateProgress();
+  } else {
+    // Done
+    state.finishedAt = new Date().toISOString();
+    showScreen('s-thanks');
+    sendEmail(); // auto-send results by email
   }
-
-  // Re-enable UI
-  document.getElementById('btn-send').disabled = false;
-  document.getElementById('btn-skip').disabled = false;
-  input.disabled = false;
-  input.focus();
-
-  // Save to Firebase
-  await saveProgress();
 }
 
-async function skipQuestion() {
-  const skip = currentLang === 'fr' ? '[Passé]' : '[Skipped]';
-  document.getElementById('answer-input').value = '';
-  document.getElementById('char-used').textContent = '0';
-
-  state.conversation.push({ role: 'participant', content: skip, timestamp: new Date().toISOString() });
-
-  showTyping();
-  try {
-    const nextQ = await callClaudeAPI();
-    removeTyping();
-    if (nextQ === '__END__' || state.questionCount >= state.maxQuestions) {
-      await finishInterview();
-    } else {
-      addMessage('interviewer', nextQ);
-      state.questionCount++;
-      updateProgress();
-    }
-  } catch(e) { removeTyping(); }
-}
-
-/* ════════════════════════════════════════════════════════════
-   CALL CLAUDE API
-   ════════════════════════════════════════════════════════════ */
-async function callClaudeAPI() {
-  const systemPrompt = buildSystemPrompt();
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': state.apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-calls': 'true'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 400,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: 'Generate the next interview question now.' }]
-    })
-  });
-
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error?.message || 'API error');
-  }
-
-  const data = await response.json();
-  const raw = data.content[0].text.trim();
-
-  // Parse themes from response
-  const themesMatch = raw.match(/THEMES_COVERED:\s*(.+)/);
-  if (themesMatch) {
-    const mentioned = themesMatch[1].split(',').map(t => t.trim()).filter(Boolean);
-    mentioned.forEach(t => {
-      if (!state.coveredThemes.includes(t)) state.coveredThemes.push(t);
-    });
-    renderThemeTags();
-  }
-
-  // Return just the question (strip THEMES_COVERED line)
-  const question = raw.replace(/\nTHEMES_COVERED:.+/s, '').trim();
-
-  // Check if Claude signals end of interview
-  if (question.toLowerCase().includes('[end_interview]') ||
-      state.coveredThemes.length >= THEMES.length) {
-    return '__END__';
-  }
-
-  return question;
-}
-
-/* ════════════════════════════════════════════════════════════
-   PROGRESS & THEMES
-   ════════════════════════════════════════════════════════════ */
 function updateProgress() {
-  const pct = Math.min(100, Math.round((state.questionCount / state.maxQuestions) * 100));
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-count').textContent = `${state.questionCount} / ${state.maxQuestions}`;
+  const pct = Math.round(((currentQ + 1) / QUESTIONS.length) * 100);
+  document.getElementById('q-prog-fill').style.width = pct + '%';
+  document.getElementById('q-prog-text').textContent = `${currentQ + 1} / ${QUESTIONS.length}`;
 }
 
-function renderThemeTags() {
-  const container = document.getElementById('theme-tags');
-  container.innerHTML = '';
-  THEMES.forEach(theme => {
-    const tag = document.createElement('span');
-    tag.className = 'tag' + (state.coveredThemes.includes(theme.id) ? ' covered' : '');
-    tag.textContent = currentLang === 'fr' ? theme.labelFr : theme.label;
-    container.appendChild(tag);
-  });
+/* ═══════════════════════════════════════════════════
+   RENDER QUESTION
+═══════════════════════════════════════════════════ */
+function renderQ(index) {
+  const q = QUESTIONS[index];
+  const d = q[lang];
+  const saved = state.answers[q.id] || {};
+  const mount = document.getElementById('q-mount');
+
+  let inner = '';
+
+  // ── textarea ──
+  if (q.type === 'textarea') {
+    inner = `
+      <div class="card" style="animation-delay:0s">
+        <div class="q-number">${lang === 'fr' ? 'Question' : 'Question'} ${index + 1} / ${QUESTIONS.length}</div>
+        <div class="q-text">${d.q}</div>
+        <div class="q-hint">${d.hint}</div>
+        <textarea id="ans-main" placeholder="${lang === 'fr' ? 'Votre réponse…' : 'Your answer…'}">${saved.main || ''}</textarea>
+        ${navButtons(index)}
+      </div>`;
+  }
+
+  // ── multi_open: checkboxes + open text ──
+  else if (q.type === 'multi_open') {
+    const checks = d.options.map((opt, i) => {
+      const isSel = (saved.selected || []).includes(opt);
+      return `<label class="check-item${isSel ? ' selected' : ''}" onclick="toggleCheck(this,'${opt.replace(/'/g,"\\'")}','q2-checks')">
+        <input type="checkbox" ${isSel ? 'checked' : ''}>
+        <div class="check-dot"></div>
+        <span>${opt}</span>
+      </label>`;
+    }).join('');
+    inner = `
+      <div class="card">
+        <div class="q-number">Question ${index + 1} / ${QUESTIONS.length}</div>
+        <div class="q-text">${d.q}</div>
+        <div class="q-hint">${d.hint}</div>
+        <div class="check-grid" id="q2-checks">${checks}</div>
+        <div style="margin-top:20px">
+          <label style="font-size:12px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px">${d.openLabel}</label>
+          <textarea id="ans-main" style="min-height:80px" placeholder="${lang === 'fr' ? 'Votre réponse…' : 'Your answer…'}">${saved.main || ''}</textarea>
+        </div>
+        ${navButtons(index)}
+      </div>`;
+  }
+
+  // ── scale_open: importance ratings per driver + open ──
+  else if (q.type === 'scale_open') {
+    const rows = d.drivers.map(drv => {
+      const val = (saved.ratings || {})[drv] || 0;
+      const btns = [1,2,3,4,5].map(n =>
+        `<button class="scale-btn${val==n?' selected':''}" onclick="rateDriver(this,'${drv.replace(/'/g,"\\'")}','${n}')">${n}</button>`
+      ).join('');
+      return `<div style="margin-bottom:16px">
+        <div style="font-size:13px;color:var(--ink);margin-bottom:6px">${drv}</div>
+        <div class="scale-group">${btns}</div>
+      </div>`;
+    }).join('');
+    inner = `
+      <div class="card">
+        <div class="q-number">Question ${index + 1} / ${QUESTIONS.length}</div>
+        <div class="q-text">${d.q}</div>
+        <div class="q-hint">${d.hint}</div>
+        <div class="scale-labels" style="margin-bottom:8px"><span>${lang==='fr'?'Pas important':'Not important'}</span><span>${lang==='fr'?'Très important':'Very important'}</span></div>
+        <div id="ratings-wrap">${rows}</div>
+        <div style="margin-top:20px">
+          <label style="font-size:12px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px">${d.openLabel}</label>
+          <textarea id="ans-main" style="min-height:70px" placeholder="${lang === 'fr' ? 'Votre réponse…' : 'Your answer…'}">${saved.main || ''}</textarea>
+        </div>
+        ${navButtons(index)}
+      </div>`;
+  }
+
+  // ── single_scale_open: one scale + open ──
+  else if (q.type === 'single_scale_open') {
+    const val = saved.scale || 0;
+    const btns = [1,2,3,4,5].map(n =>
+      `<button class="scale-btn${val==n?' selected':''}" onclick="selectScale(this,${n})" style="flex:1;padding:14px 8px;font-size:15px">${n}</button>`
+    ).join('');
+    inner = `
+      <div class="card">
+        <div class="q-number">Question ${index + 1} / ${QUESTIONS.length}</div>
+        <div class="q-text">${d.q}</div>
+        <div class="q-hint">${d.hint}</div>
+        <div class="scale-group" id="single-scale">${btns}</div>
+        <div class="scale-labels"><span>${d.scaleMin}</span><span>${d.scaleMax}</span></div>
+        <div style="margin-top:24px">
+          <label style="font-size:12px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px">${d.openLabel}</label>
+          <textarea id="ans-main" placeholder="${lang === 'fr' ? 'Votre réponse…' : 'Your answer…'}">${saved.main || ''}</textarea>
+        </div>
+        ${navButtons(index)}
+      </div>`;
+  }
+
+  mount.innerHTML = inner;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ════════════════════════════════════════════════════════════
-   CHAR COUNTER
-   ════════════════════════════════════════════════════════════ */
-document.getElementById('answer-input').addEventListener('input', function() {
-  document.getElementById('char-used').textContent = this.value.length;
-});
-document.getElementById('answer-input').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && e.ctrlKey) sendAnswer();
-});
-
-/* ════════════════════════════════════════════════════════════
-   FINISH INTERVIEW
-   ════════════════════════════════════════════════════════════ */
-async function finishInterview() {
-  state.finished = true;
-  state.finishedAt = new Date().toISOString();
-
-  // Closing message
-  const closing = currentLang === 'fr'
-    ? `C'est tout pour les questions — merci infiniment pour la richesse de vos réponses. Votre expérience professionnelle apporte une contribution précieuse à cette recherche. Vous allez maintenant être redirigé vers l'écran de conclusion.`
-    : `That concludes the interview questions — thank you so much for the depth and quality of your responses. Your professional experience makes a valuable contribution to this research. You will now be taken to the closing screen.`;
-
-  addMessage('interviewer', closing);
-
-  // Hide answer zone
-  document.getElementById('answer-zone').classList.add('hidden');
-
-  // Save final state to Firebase
-  await saveProgress('completed');
-
-  // Short delay then go to thanks
-  setTimeout(() => goTo('screen-thanks'), 2800);
+function navButtons(index) {
+  const isLast = index === QUESTIONS.length - 1;
+  const backLabel = lang === 'fr' ? '← Retour' : '← Back';
+  const nextLabel = isLast
+    ? (lang === 'fr' ? 'Terminer ✓' : 'Finish ✓')
+    : (lang === 'fr' ? 'Suivant →' : 'Next →');
+  const nextClass = isLast ? 'btn-gold' : 'btn-primary';
+  return `<div class="nav-row">
+    <button class="btn btn-ghost" onclick="prevQ()">${backLabel}</button>
+    <button class="btn ${nextClass}" onclick="nextQ()">${nextLabel}</button>
+  </div>`;
 }
 
-/* ════════════════════════════════════════════════════════════
-   FIREBASE SAVE
-   ════════════════════════════════════════════════════════════ */
-async function saveProgress(status = 'in_progress') {
-  if (!state.db || !state.docRef) return;
-  try {
-    const { doc, updateDoc, serverTimestamp } = window._fbModules;
-    await updateDoc(state.docRef, {
-      conversation: state.conversation,
-      coveredThemes: state.coveredThemes,
-      questionCount: state.questionCount,
-      status,
-      updatedAt: serverTimestamp(),
-      lang: currentLang
+/* ═══════════════════════════════════════════════════
+   INTERACTION HELPERS
+═══════════════════════════════════════════════════ */
+function toggleCheck(el, value, groupId) {
+  el.classList.toggle('selected');
+}
+
+function rateDriver(btn, driver, value) {
+  // Deselect siblings in same driver row
+  const row = btn.closest('div');
+  row.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function selectScale(btn, value) {
+  document.querySelectorAll('#single-scale .scale-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+/* ═══════════════════════════════════════════════════
+   SAVE ANSWER
+═══════════════════════════════════════════════════ */
+function saveCurrentAnswer() {
+  if (currentQ < 0) return;
+  const q = QUESTIONS[currentQ];
+  const d = q[lang];
+
+  if (q.type === 'textarea') {
+    const el = document.getElementById('ans-main');
+    state.answers[q.id] = { main: el ? el.value.trim() : '' };
+  }
+  else if (q.type === 'multi_open') {
+    const selected = [...document.querySelectorAll('#q2-checks .check-item.selected')]
+      .map(el => el.querySelector('span').textContent);
+    const main = document.getElementById('ans-main');
+    state.answers[q.id] = { selected, main: main ? main.value.trim() : '' };
+  }
+  else if (q.type === 'scale_open') {
+    const ratings = {};
+    document.querySelectorAll('#ratings-wrap > div').forEach(row => {
+      const driver = row.querySelector('div').textContent;
+      const sel = row.querySelector('.scale-btn.selected');
+      if (sel) ratings[driver] = parseInt(sel.textContent);
     });
-  } catch(e) { console.warn('Firebase update failed:', e); }
+    const main = document.getElementById('ans-main');
+    state.answers[q.id] = { ratings, main: main ? main.value.trim() : '' };
+  }
+  else if (q.type === 'single_scale_open') {
+    const sel = document.querySelector('#single-scale .scale-btn.selected');
+    const main = document.getElementById('ans-main');
+    state.answers[q.id] = {
+      scale: sel ? parseInt(sel.textContent) : null,
+      main: main ? main.value.trim() : ''
+    };
+  }
 }
 
-/* ════════════════════════════════════════════════════════════
-   EXPORT FUNCTIONS
-   ════════════════════════════════════════════════════════════ */
-function buildExportData() {
+/* ═══════════════════════════════════════════════════
+   EXPORT
+═══════════════════════════════════════════════════ */
+function buildExport() {
   return {
     sessionId: state.sessionId,
     exportedAt: new Date().toISOString(),
     startedAt: state.startedAt,
     finishedAt: state.finishedAt,
-    lang: currentLang,
+    lang,
     profile: state.profile,
-    coveredThemes: state.coveredThemes,
-    questionCount: state.questionCount,
-    conversation: state.conversation
+    answers: state.answers
   };
 }
 
 function exportJSON() {
-  const data = buildExportData();
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `interview_${state.sessionId.slice(0,8)}_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
+  const blob = new Blob([JSON.stringify(buildExport(), null, 2)], { type: 'application/json' });
+  dl(blob, `interview_${state.sessionId.slice(0,8)}.json`);
 }
 
 function exportCSV() {
-  const rows = [['timestamp', 'role', 'content']];
-  state.conversation.forEach(m => {
-    rows.push([m.timestamp, m.role, `"${(m.content || '').replace(/"/g, '""')}"`]);
+  const rows = [['session_id','started_at','finished_at','lang','role','sector','size','sc_involvement','question_id','answer_text']];
+  const p = state.profile;
+  QUESTIONS.forEach(q => {
+    const a = state.answers[q.id] || {};
+    let text = '';
+    if (a.main) text = a.main;
+    if (a.selected) text = a.selected.join('; ') + (a.main ? ' | ' + a.main : '');
+    if (a.ratings) text = Object.entries(a.ratings).map(([k,v])=>`${k}:${v}`).join('; ') + (a.main ? ' | ' + a.main : '');
+    if (a.scale != null && a.main !== undefined) text = `Scale:${a.scale} | ${a.main}`;
+    rows.push([state.sessionId, state.startedAt, state.finishedAt, lang, p.role, p.sector, p.size, p.sc, q.id, `"${(text||'').replace(/"/g,'""')}"`]);
   });
-
-  // Add metadata rows at top
-  const meta = [
-    ['# Session ID', state.sessionId],
-    ['# Role', state.profile.role],
-    ['# Sector', state.profile.sector],
-    ['# Company size', state.profile.size],
-    ['# AI familiarity', state.profile.ai],
-    ['# SC involvement', state.profile.sc],
-    ['# Covered themes', state.coveredThemes.join('; ')],
-    ['# Started', state.startedAt],
-    ['# Finished', state.finishedAt],
-    [''],
-    ...rows
-  ];
-
-  const csv = meta.map(r => r.join(',')).join('\n');
+  const csv = rows.map(r => r.join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
+  dl(blob, `interview_${state.sessionId.slice(0,8)}.csv`);
+}
+
+function dl(blob, name) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `interview_${state.sessionId.slice(0,8)}_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
+  a.href = url; a.download = name; a.click();
   URL.revokeObjectURL(url);
 }
 
-/* ════════════════════════════════════════════════════════════
-   ADMIN PANEL
-   ════════════════════════════════════════════════════════════ */
-async function loadAdminPanel() {
-  if (!state.db) {
-    document.getElementById('admin-list').innerHTML = '<p style="color:var(--danger)">Firebase not configured.</p>';
-    return;
-  }
-  try {
-    const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    const q = query(collection(state.db, 'interviews'), orderBy('startedAt', 'desc'));
-    const snap = await getDocs(q);
-    const list = document.getElementById('admin-list');
-    list.innerHTML = '';
+/* ═══════════════════════════════════════════════════
+   EMAILJS CONFIG
+═══════════════════════════════════════════════════ */
+const EMAILJS_PUBLIC_KEY  = 'o8zYpLxcCY_pj_XB7';
+const EMAILJS_SERVICE_ID  = 'service_jws2ti1';
+const EMAILJS_TEMPLATE_ID = '1cn9jrh';
 
-    if (snap.empty) {
-      list.innerHTML = '<p style="color:var(--muted)">No interviews yet.</p>';
-      return;
+function buildEmailBody() {
+  const p = state.profile;
+  const lines = [];
+  lines.push('=== PROFIL PARTICIPANT ===');
+  lines.push('Rôle : ' + (p.role || '—'));
+  lines.push('Secteur : ' + (p.sector || '—'));
+  lines.push('Taille entreprise : ' + (p.size || '—'));
+  lines.push('Implication SC : ' + (p.sc || '—'));
+  lines.push('Langue : ' + lang);
+  lines.push('Session : ' + state.sessionId);
+  lines.push('Démarré : ' + (state.startedAt || '—'));
+  lines.push('Terminé : ' + (state.finishedAt || '—'));
+  lines.push('');
+
+  const labels = {
+    q1_ai_use:       'Q1 — Usage actuel de l'IA',
+    q2_sc_processes: 'Q2 — Processus SC impactés',
+    q3_motivations:  'Q3 — Motivations',
+    q4_barriers:     'Q4 — Barrières',
+    q5_luxury:       'Q5 — Spécificités luxe',
+    q6_transformation:'Q6 — Transformation vs optimisation',
+    q7_success:      'Q7 — Facteurs de succès',
+    q8_future:       'Q8 — Perspectives 3–5 ans',
+  };
+
+  QUESTIONS.forEach(q => {
+    const a = state.answers[q.id] || {};
+    lines.push('=== ' + (labels[q.id] || q.id) + ' ===');
+    if (a.selected && a.selected.length) lines.push('Sélections : ' + a.selected.join(', '));
+    if (a.ratings) {
+      lines.push('Évaluations :');
+      Object.entries(a.ratings).forEach(([k,v]) => lines.push('  ' + k + ' : ' + v + '/5'));
     }
+    if (a.scale != null) lines.push('Échelle : ' + a.scale + '/5');
+    if (a.main) lines.push('Réponse : ' + a.main);
+    if (!a.selected && a.scale == null && !a.main) lines.push('(pas de réponse)');
+    lines.push('');
+  });
 
-    snap.forEach(docSnap => {
-      const d = docSnap.data();
-      const div = document.createElement('div');
-      div.className = 'admin-interview';
-      div.innerHTML = `
-        <h3>${d.profile?.role || 'Unknown'} — ${d.profile?.sector || ''}</h3>
-        <div class="meta">
-          ${d.sessionId?.slice(0,8)} · ${d.status} · ${d.lang || 'en'} · Q: ${d.questionCount || 0} ·
-          Themes: ${(d.coveredThemes || []).join(', ') || 'none'}
-        </div>
-        ${(d.conversation || []).filter(m => m.role !== 'system').map(m => `
-          <div class="admin-qa">
-            <div class="q">[${m.role}] ${m.timestamp?.slice(0,16) || ''}</div>
-            <div class="a">${m.content}</div>
-          </div>
-        `).join('')}
-      `;
-      list.appendChild(div);
+  return lines.join('\n');
+}
+
+async function sendEmail() {
+  const statusEl = document.getElementById('email-status');
+  statusEl.textContent = lang === 'fr' ? '⏳ Envoi en cours…' : '⏳ Sending…';
+  statusEl.style.color = 'var(--ink-light)';
+
+  try {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      title: state.profile.role + ' — ' + state.profile.sector,
+      name:  state.profile.role || 'Participant',
+      email: 'noreply@research.com',
+      message: buildEmailBody()
     });
-  } catch(e) {
-    document.getElementById('admin-list').innerHTML = `<p style="color:var(--danger)">Error loading: ${e.message}</p>`;
+    statusEl.innerHTML = lang === 'fr'
+      ? '✅ Réponses envoyées avec succès à anterieuxnoe@gmail.com'
+      : '✅ Responses sent successfully to anterieuxnoe@gmail.com';
+    statusEl.style.color = '#4a7c59';
+  } catch(err) {
+    console.error('EmailJS error:', err);
+    statusEl.innerHTML = lang === 'fr'
+      ? '⚠️ Envoi automatique échoué — merci de télécharger le JSON et de l'envoyer manuellement.'
+      : '⚠️ Auto-send failed — please download the JSON and send it manually.';
+    statusEl.style.color = '#b05050';
   }
 }
 
-function exportAllCSV() {
-  // Placeholder — in a real deployment this would fetch all Firebase docs
-  alert('Export all: implement by fetching all Firestore documents and converting to CSV.');
-}
-
-/* ════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    INIT
-   ════════════════════════════════════════════════════════════ */
-applyI18n();
+═══════════════════════════════════════════════════ */
+applyT();
 </script>
 </body>
 </html>
