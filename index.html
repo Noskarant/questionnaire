@@ -435,12 +435,8 @@ select option { background: white; }
       <p><strong data-t="consent.c3title">Voluntary.</strong> <span data-t="consent.c3">You may stop at any time. Your responses are saved locally and exported only when you click "Download" at the end.</span></p>
     </div>
 
-    <label class="consent-check">
-      <input type="checkbox" id="chk-consent" onclick="toggleConsent(this)">
-      <span data-t="consent.check">I understand the above and I agree to participate in this research.</span>
-    </label>
 
-    <button class="btn btn-primary" id="btn-start" disabled onclick="startSurvey()" data-t="welcome.btn">Begin → </button>
+    <button class="btn btn-primary" id="btn-start" onclick="startSurvey()" data-t="welcome.btn">Begin →</button>
   </div>
 </div>
 
@@ -782,10 +778,7 @@ function showScreen(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Consent checkbox
-function toggleConsent(el) {
-  document.getElementById('btn-start').disabled = !el.checked;
-}
+
 
 function startSurvey() {
   state.startedAt = new Date().toISOString();
