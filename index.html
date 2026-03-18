@@ -550,7 +550,7 @@ const T = {
     "welcome.label": "Master's Dissertation · 2025",
     "welcome.h1": "AI & Supply Chain<br>in <em>Luxury</em>",
     "welcome.p": "A short written interview for professionals in supply chain, operations, and related functions. Your answers directly feed academic research.",
-    "welcome.time": "Approximately 10–12 minutes",
+    "welcome.time": "Approximately 15–20 minutes",
     "welcome.btn": "Begin →",
     "consent.c1title": "Confidentiality.",
     "consent.c1": "All responses are fully anonymised. No identifying information will be published. Data is used solely for academic purposes.",
@@ -578,7 +578,7 @@ const T = {
     "welcome.label": "Mémoire de Master · 2025",
     "welcome.h1": "IA & Supply Chain<br>dans le <em>Luxe</em>",
     "welcome.p": "Un court entretien écrit pour les professionnels de la supply chain, des opérations et fonctions connexes. Vos réponses alimentent directement une recherche académique.",
-    "welcome.time": "Environ 10–12 minutes",
+    "welcome.time": "Environ 15–20 minutes",
     "welcome.btn": "Commencer →",
     "consent.c1title": "Confidentialité.",
     "consent.c1": "Toutes les réponses sont entièrement anonymisées. Aucune information identifiable ne sera publiée. Les données sont utilisées uniquement à des fins académiques.",
@@ -629,12 +629,12 @@ const QUESTIONS = [
     id: 'q1_ai_use',
     type: 'textarea',
     en: {
-      q: 'How is artificial intelligence currently used in your organisation\'s supply chain activities?',
-      hint: 'If AI is not yet used, describe where you see the most potential. Feel free to give examples.'
+      q: 'What is your current relationship with AI in supply chain — and where do you see it having the most impact?',
+      hint: 'Whether AI is already deployed, being explored, or not yet adopted, we want to understand your perspective and experience.'
     },
     fr: {
-      q: 'Comment l\'intelligence artificielle est-elle actuellement utilisée dans les activités supply chain de votre organisation ?',
-      hint: 'Si l\'IA n\'est pas encore utilisée, décrivez où vous voyez le plus de potentiel. N\'hésitez pas à donner des exemples.'
+      q: 'Quel est votre rapport à l\'IA dans la supply chain aujourd\'hui — et où voyez-vous son impact le plus significatif ?',
+      hint: 'Que l\'IA soit déjà déployée, en cours d\'exploration ou pas encore adoptée, nous souhaitons comprendre votre perspective et votre expérience.'
     }
   },
 
@@ -656,21 +656,17 @@ const QUESTIONS = [
     }
   },
 
-  // Q3 — Motivations (scale + open)
+  // Q3 — Motivations (open - simplified)
   {
     id: 'q3_motivations',
-    type: 'scale_open',
+    type: 'textarea',
     en: {
-      q: 'What are the main motivations behind AI adoption in your supply chain?',
-      hint: 'Rate the importance of each driver, then add any motivation not listed.',
-      drivers: ['Cost reduction','Efficiency gains','Better forecasting','Improved traceability','Customer experience','Sustainability','Faster decision-making'],
-      openLabel: 'Any other key motivation?'
+      q: 'What are the 2 or 3 main reasons that drive — or would drive — AI adoption in your supply chain?',
+      hint: 'For example: cost reduction, better forecasting, traceability, customer experience, speed, visibility… Be as specific as you like.'
     },
     fr: {
-      q: 'Quelles sont les principales motivations derrière l\'adoption de l\'IA dans votre supply chain ?',
-      hint: 'Évaluez l\'importance de chaque levier, puis ajoutez toute motivation non listée.',
-      drivers: ['Réduction des coûts','Gains d\'efficacité','Meilleure prévision','Traçabilité améliorée','Expérience client','Durabilité','Décisions plus rapides'],
-      openLabel: 'Autre motivation clé ?'
+      q: 'Quelles sont les 2 ou 3 principales raisons qui motivent — ou motiveraient — l\'adoption de l\'IA dans votre supply chain ?',
+      hint: 'Par exemple : réduction des coûts, meilleure prévision, traçabilité, expérience client, rapidité, visibilité… Soyez aussi précis que vous le souhaitez.'
     }
   },
 
@@ -693,12 +689,12 @@ const QUESTIONS = [
     id: 'q5_luxury',
     type: 'textarea',
     en: {
-      q: 'How does the luxury context specifically shape your approach to AI in the supply chain?',
-      hint: 'Consider aspects such as craftsmanship, exclusivity, traceability, brand image, personalisation, or premium customer experience.'
+      q: 'To what extent do sector-specific requirements — such as quality standards, exclusivity, traceability, or brand image — shape your approach to AI in the supply chain?',
+      hint: 'If you work in or with the luxury sector, feel free to draw on that context. If not, think about the high-end or premium constraints relevant to your industry.'
     },
     fr: {
-      q: 'En quoi le contexte du luxe influence-t-il spécifiquement votre approche de l\'IA dans la supply chain ?',
-      hint: 'Pensez à des aspects tels que l\'artisanat, l\'exclusivité, la traçabilité, l\'image de marque, la personnalisation ou l\'expérience client premium.'
+      q: 'Dans quelle mesure les exigences spécifiques à votre secteur — qualité, exclusivité, traçabilité, image de marque — influencent-elles votre approche de l\'IA dans la supply chain ?',
+      hint: 'Si vous travaillez dans ou avec le secteur du luxe, appuyez-vous sur ce contexte. Sinon, pensez aux contraintes premium propres à votre industrie.'
     }
   },
 
@@ -754,12 +750,26 @@ const QUESTIONS = [
 /* ═══════════════════════════════════════════════════
    STATE
 ═══════════════════════════════════════════════════ */
-const state = {
+// Restore from localStorage if available
+const STORAGE_KEY = 'dissertation_survey_v1';
+function loadSavedState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return null;
+}
+const saved = loadSavedState();
+const state = saved || {
   sessionId: crypto.randomUUID(),
   startedAt: null,
   profile: {},
-  answers: {}   // { q_id: value }
+  answers: {}
 };
+
+function persistState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
 
 let currentQ = -1;
 
@@ -795,6 +805,7 @@ function goQ(index) {
     }
     document.getElementById('profile-err').classList.add('hidden');
     state.profile = { role, sector, size, sc };
+  persistState();
     showScreen('s-questions');
   }
 
@@ -821,6 +832,7 @@ function nextQ() {
   } else {
     // Done
     state.finishedAt = new Date().toISOString();
+    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
     showScreen('s-thanks');
     sendEmail(); // auto-send results by email
   }
@@ -974,6 +986,7 @@ function saveCurrentAnswer() {
   if (q.type === 'textarea') {
     const el = document.getElementById('ans-main');
     state.answers[q.id] = { main: el ? el.value.trim() : '' };
+  persistState();
   }
   else if (q.type === 'multi_open') {
     const selected = [...document.querySelectorAll('#q2-checks .check-item.selected')]
