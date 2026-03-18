@@ -617,7 +617,6 @@ function applyT() {
 
 /* ═══════════════════════════════════════════════════
    QUESTION BANK
-   8 questions covering all dissertation themes
 ═══════════════════════════════════════════════════ */
 const QUESTIONS = [
   // Q1 — AI current use (open)
@@ -777,8 +776,6 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-
 
 function startSurvey() {
   state.startedAt = new Date().toISOString();
@@ -979,7 +976,7 @@ function saveCurrentAnswer() {
   if (q.type === 'textarea') {
     const el = document.getElementById('ans-main');
     state.answers[q.id] = { main: el ? el.value.trim() : '' };
-  persistState();
+    persistState();
   }
   else if (q.type === 'multi_open') {
     const selected = [...document.querySelectorAll('#q2-checks .check-item.selected')]
@@ -1073,7 +1070,7 @@ function buildEmailBody() {
   lines.push('');
 
   const labels = {
-    q1_ai_use:       'Q1 — Usage actuel de l'IA',
+    q1_ai_use:       "Q1 — Usage actuel de l'IA",
     q2_sc_processes: 'Q2 — Processus SC impactés',
     q3_motivations:  'Q3 — Motivations',
     q4_barriers:     'Q4 — Barrières',
@@ -1120,7 +1117,7 @@ async function sendEmail() {
   } catch(err) {
     console.error('EmailJS error:', err);
     statusEl.innerHTML = lang === 'fr'
-      ? '⚠️ Envoi automatique échoué — merci de télécharger le JSON et de l'envoyer manuellement.'
+      ? '⚠️ Envoi automatique échoué — merci de télécharger le JSON et de l\'envoyer manuellement.'
       : '⚠️ Auto-send failed — please download the JSON and send it manually.';
     statusEl.style.color = '#b05050';
   }
