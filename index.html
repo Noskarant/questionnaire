@@ -436,7 +436,7 @@ select option { background: white; }
     </div>
 
     <label class="consent-check">
-      <input type="checkbox" id="chk-consent">
+      <input type="checkbox" id="chk-consent" onclick="toggleConsent(this)">
       <span data-t="consent.check">I understand the above and I agree to participate in this research.</span>
     </label>
 
@@ -783,9 +783,9 @@ function showScreen(id) {
 }
 
 // Consent checkbox
-document.getElementById('chk-consent').addEventListener('change', function() {
-  document.getElementById('btn-start').disabled = !this.checked;
-});
+function toggleConsent(el) {
+  document.getElementById('btn-start').disabled = !el.checked;
+}
 
 function startSurvey() {
   state.startedAt = new Date().toISOString();
