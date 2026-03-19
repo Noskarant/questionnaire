@@ -9,1124 +9,531 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 :root {
-  --bg: #f7f5f0;
-  --white: #ffffff;
-  --ink: #1a1814;
-  --ink-light: #6b6760;
-  --gold: #9a7c3e;
-  --gold-light: #e8dfc8;
-  --gold-pale: #f4f0e6;
-  --border: #e2ddd4;
-  --radius: 4px;
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --bg:#f7f5f0;--white:#fff;--ink:#1a1814;--ink-light:#6b6760;
+  --gold:#9a7c3e;--gold-light:#e8dfc8;--gold-pale:#f4f0e6;
+  --border:#e2ddd4;--r:4px;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.shell{max-width:680px;margin:0 auto;padding:60px 24px 100px}
+.screen{display:none}.screen.active{display:block}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.hdr{text-align:center;margin-bottom:48px}
+.eyebrow{display:inline-block;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:20px;border-bottom:1px solid var(--gold-light);padding-bottom:8px}
+.hdr h1{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,44px);font-weight:300;line-height:1.2;margin-bottom:14px}
+.hdr h1 em{font-style:italic;color:var(--gold)}
+.hdr p{font-size:14px;color:var(--ink-light);line-height:1.7;max-width:480px;margin:0 auto}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--gold);font-weight:500;margin-top:16px}
 
-html { scroll-behavior: smooth; }
+.prog-wrap{margin-bottom:40px}
+.prog-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-light);margin-bottom:8px}
+.prog-track{height:2px;background:var(--border);border-radius:1px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-light),var(--gold));border-radius:1px;transition:width .5s}
 
-body {
-  font-family: 'Outfit', sans-serif;
-  background: var(--bg);
-  color: var(--ink);
-  min-height: 100vh;
-  padding: 0;
-}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:40px 44px;margin-bottom:20px;position:relative}
+.card::after{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;background:var(--gold);border-radius:1px;opacity:.4}
+@media(max-width:520px){.card{padding:28px 20px}}
 
-/* ── Layout ── */
-.shell {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 60px 24px 100px;
-}
+.cbox{background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:var(--r);padding:24px 28px;margin-bottom:28px}
+.cbox p{font-size:13px;color:var(--ink);line-height:1.75;margin-bottom:12px}
+.cbox p:last-child{margin-bottom:0}
 
-/* ── Header ── */
-.site-header {
-  text-align: center;
-  margin-bottom: 56px;
-  animation: fadeDown 0.6s var(--ease) both;
-}
-.site-header .label {
-  display: inline-block;
-  font-size: 10px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 500;
-  margin-bottom: 20px;
-  border-bottom: 1px solid var(--gold-light);
-  padding-bottom: 8px;
-}
-.site-header h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(30px, 5vw, 46px);
-  font-weight: 300;
-  line-height: 1.2;
-  color: var(--ink);
-  margin-bottom: 16px;
-}
-.site-header h1 em {
-  font-style: italic;
-  color: var(--gold);
-}
-.site-header p {
-  font-size: 14px;
-  color: var(--ink-light);
-  line-height: 1.7;
-  max-width: 480px;
-  margin: 0 auto;
-}
+.qnum{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:12px}
+.qtxt{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,3vw,24px);font-weight:400;line-height:1.4;color:var(--ink);margin-bottom:8px}
+.qhint{font-size:13px;color:var(--ink-light);line-height:1.6;margin-bottom:20px;font-style:italic}
 
-/* ── Progress ── */
-.progress-bar-wrap {
-  margin-bottom: 48px;
-  animation: fadeDown 0.6s 0.1s var(--ease) both;
-}
-.progress-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--ink-light);
-  margin-bottom: 8px;
-  letter-spacing: 0.5px;
-}
-.progress-track {
-  height: 2px;
-  background: var(--border);
-  border-radius: 1px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--gold-light), var(--gold));
-  border-radius: 1px;
-  transition: width 0.5s var(--ease);
-}
+textarea,input[type=text],select{width:100%;font-family:'Outfit',sans-serif;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;outline:none;line-height:1.6}
+textarea{min-height:130px;resize:vertical}
+textarea:focus,input:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(154,124,62,.08);background:var(--white)}
+textarea::placeholder,input::placeholder{color:#b5b2ac}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a7c3e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+select option{background:#fff}
 
-/* ── Cards ── */
-.card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 40px 44px;
-  margin-bottom: 20px;
-  animation: fadeUp 0.5s var(--ease) both;
-  position: relative;
-}
-.card::after {
-  content: '';
-  position: absolute;
-  left: 0; top: 20%; bottom: 20%;
-  width: 2px;
-  background: var(--gold);
-  border-radius: 1px;
-  opacity: 0.4;
-}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:520px){.pgrid{grid-template-columns:1fr}}
+.field label{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:8px}
 
-/* ── Question ── */
-.q-number {
-  font-size: 10px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 500;
-  margin-bottom: 12px;
-}
-.q-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(18px, 3vw, 24px);
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--ink);
-  margin-bottom: 6px;
-}
-.q-hint {
-  font-size: 13px;
-  color: var(--ink-light);
-  line-height: 1.6;
-  margin-bottom: 20px;
-  font-style: italic;
-}
+/* CHECKBOXES — key fix: use div not label, pure JS toggle */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+@media(max-width:480px){.cgrid{grid-template-columns:1fr}}
+.ci{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;background:var(--bg);font-size:13px;color:var(--ink);user-select:none;transition:border-color .15s,background .15s}
+.ci:hover{border-color:var(--gold-light);background:var(--gold-pale)}
+.ci.on{border-color:var(--gold);background:var(--gold-pale)}
+.cdot{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:10px;color:transparent;font-weight:700}
+.ci.on .cdot{background:var(--gold);border-color:var(--gold);color:#fff}
 
-/* ── Inputs ── */
-textarea, input[type=text], select {
-  width: 100%;
-  font-family: 'Outfit', sans-serif;
-  font-size: 14px;
-  color: var(--ink);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  outline: none;
-  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
-  line-height: 1.6;
-  resize: vertical;
-}
-textarea { min-height: 120px; }
-textarea:focus, input:focus, select:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(154, 124, 62, 0.08);
-  background: var(--white);
-}
-textarea::placeholder, input::placeholder { color: #b5b2ac; }
-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a7c3e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-select option { background: white; }
+.sgroup{display:flex;gap:8px;margin-bottom:6px}
+.sbtn{flex:1;padding:14px 8px;border:1px solid var(--border);background:var(--bg);border-radius:var(--r);font-family:'Outfit',sans-serif;font-size:15px;color:var(--ink-light);cursor:pointer;text-align:center;transition:all .15s}
+.sbtn:hover{border-color:var(--gold-light);color:var(--ink)}
+.sbtn.on{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:500}
+.slabels{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-light);margin-bottom:20px}
+.sublabel{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:8px;display:block;margin-top:20px}
 
-/* Profile grid */
-.profile-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-.field label {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-@media (max-width: 520px) { .profile-grid { grid-template-columns: 1fr; } .card { padding: 28px 20px; } }
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 32px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;letter-spacing:.5px;border:none;border-radius:var(--r);cursor:pointer;transition:all .2s}
+.btn-ink{background:var(--ink);color:#fff}.btn-ink:hover{background:#2d2a24;transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,24,20,.15)}
+.btn-ghost{background:transparent;color:var(--ink-light);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--ink-light);color:var(--ink)}
+.btn-gold{background:var(--gold);color:#fff}.btn-gold:hover{background:#876d35;transform:translateY(-1px)}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px}
+.nav-end{display:flex;justify-content:flex-end;margin-top:28px}
+.err{font-size:12px;color:#b05050;margin-top:8px;display:none}
 
-/* ── Scale buttons ── */
-.scale-group {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 4px;
-}
-.scale-btn {
-  flex: 1;
-  min-width: 44px;
-  padding: 10px 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  border-radius: var(--radius);
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  color: var(--ink-light);
-  cursor: pointer;
-  transition: all 0.18s var(--ease);
-  text-align: center;
-}
-.scale-btn:hover { border-color: var(--gold-light); color: var(--ink); }
-.scale-btn.selected {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: white;
-  font-weight: 500;
-}
-.scale-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--ink-light);
-  margin-top: 6px;
-  padding: 0 2px;
-}
+.thx{text-align:center;padding:40px 20px}
+.thx-icon{width:72px;height:72px;border-radius:50%;border:2px solid var(--gold-light);background:var(--gold-pale);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 32px}
+.thx h2{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;margin-bottom:16px}
+.thx h2 em{font-style:italic;color:var(--gold)}
+.thx p{font-size:15px;color:var(--ink-light);line-height:1.7;max-width:460px;margin:0 auto 12px}
+.xrow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+.estatus{margin:16px auto;max-width:420px;font-size:14px;min-height:20px;color:var(--ink-light);text-align:center}
 
-/* ── Checkbox multi ── */
-.check-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 4px;
-}
-.check-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.18s var(--ease);
-  background: var(--bg);
-  font-size: 13px;
-  color: var(--ink);
-  user-select: none;
-}
-.check-item:hover { border-color: var(--gold-light); background: var(--gold-pale); }
-.check-item.selected { border-color: var(--gold); background: var(--gold-pale); color: var(--ink); }
-.check-item input { display: none; }
-.check-dot {
-  width: 16px; height: 16px;
-  border: 1.5px solid var(--border);
-  border-radius: 3px;
-  flex-shrink: 0;
-  transition: all 0.18s var(--ease);
-  display: flex; align-items: center; justify-content: center;
-}
-.check-item.selected .check-dot {
-  background: var(--gold);
-  border-color: var(--gold);
-}
-.check-item.selected .check-dot::after {
-  content: '✓';
-  font-size: 10px;
-  color: white;
-  font-weight: 700;
-}
-@media (max-width: 480px) { .check-grid { grid-template-columns: 1fr; } }
-
-/* ── Consent ── */
-.consent-block {
-  background: var(--gold-pale);
-  border: 1px solid var(--gold-light);
-  border-radius: var(--radius);
-  padding: 24px 28px;
-  margin-bottom: 28px;
-}
-.consent-block p {
-  font-size: 13px;
-  color: var(--ink);
-  line-height: 1.75;
-  margin-bottom: 12px;
-}
-.consent-block p:last-child { margin-bottom: 0; }
-.consent-block strong { color: var(--ink); font-weight: 500; }
-
-.consent-check {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  cursor: pointer;
-  margin-bottom: 28px;
-}
-.consent-check input { width: 17px; height: 17px; accent-color: var(--gold); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
-.consent-check span { font-size: 14px; color: var(--ink); line-height: 1.5; }
-
-/* ── Buttons ── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 13px 32px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  border: none;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.2s var(--ease);
-}
-.btn-primary { background: var(--ink); color: white; }
-.btn-primary:hover { background: #2d2a24; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,24,20,0.15); }
-.btn-primary:disabled { background: var(--border); color: var(--ink-light); cursor: not-allowed; transform: none; box-shadow: none; }
-.btn-ghost { background: transparent; color: var(--ink-light); border: 1px solid var(--border); }
-.btn-ghost:hover { border-color: var(--ink-light); color: var(--ink); }
-.btn-gold { background: var(--gold); color: white; }
-.btn-gold:hover { background: #876d35; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(154,124,62,0.25); }
-
-.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
-.nav-row-end { display: flex; justify-content: flex-end; margin-top: 28px; }
-
-/* ── Thank you screen ── */
-.thanks-wrap {
-  text-align: center;
-  padding: 60px 20px;
-}
-.thanks-icon {
-  width: 72px; height: 72px;
-  border-radius: 50%;
-  border: 2px solid var(--gold-light);
-  background: var(--gold-pale);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 30px;
-  margin: 0 auto 32px;
-}
-.thanks-wrap h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 38px;
-  font-weight: 300;
-  margin-bottom: 16px;
-  color: var(--ink);
-}
-.thanks-wrap h2 em { font-style: italic; color: var(--gold); }
-.thanks-wrap p { font-size: 15px; color: var(--ink-light); line-height: 1.7; max-width: 460px; margin: 0 auto 32px; }
-.export-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-/* ── Animations ── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Screens ── */
-.screen { display: none; }
-.screen.active { display: block; }
-
-/* ── Lang toggle ── */
-.lang-toggle {
-  position: fixed;
-  top: 16px; right: 16px;
-  display: flex;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  overflow: hidden;
-  z-index: 100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-.lang-toggle button {
-  padding: 6px 14px;
-  border: none;
-  background: transparent;
-  font-family: 'Outfit', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink-light);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.lang-toggle button.active { background: var(--ink); color: white; }
-
-/* ── Estimated time badge ── */
-.time-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--gold-pale);
-  border: 1px solid var(--gold-light);
-  border-radius: 20px;
-  padding: 5px 14px;
-  font-size: 12px;
-  color: var(--gold);
-  font-weight: 500;
-  margin-top: 16px;
-}
-
-/* error */
-.err { font-size: 12px; color: #b05050; margin-top: 8px; }
+.lang{position:fixed;top:16px;right:16px;display:flex;background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.lang button{padding:6px 14px;border:none;background:transparent;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;color:var(--ink-light);cursor:pointer}
+.lang button.on{background:var(--ink);color:#fff}
 </style>
 </head>
 <body>
 
-<div class="lang-toggle">
-  <button onclick="setLang('en')" id="lb-en" class="active">EN</button>
-  <button onclick="setLang('fr')" id="lb-fr">FR</button>
+<div class="lang">
+  <button id="lb-en" class="on" onclick="setLang('en')">EN</button>
+  <button id="lb-fr" onclick="setLang('fr')">FR</button>
 </div>
 
 <div class="shell">
 
-<!-- ══════════════════════════════════
-     SCREEN 0 — WELCOME + CONSENT
-     ══════════════════════════════════ -->
-<div class="screen active" id="s-welcome">
-
-  <div class="site-header">
-    <div class="label" data-t="welcome.label">Master's Dissertation · 2025</div>
-    <h1 data-t="welcome.h1">AI & Supply Chain<br>in <em>Luxury</em></h1>
-    <p data-t="welcome.p">A short written interview for professionals in supply chain, operations, and related functions. Your answers directly feed academic research.</p>
-    <div class="time-badge">⏱ <span data-t="welcome.time">Approximately 10–12 minutes</span></div>
-  </div>
-
-  <div class="card">
-    <div class="consent-block">
-      <p><strong data-t="consent.c1title">Confidentiality.</strong> <span data-t="consent.c1">All responses are fully anonymised. No identifying information will be published. Data is used solely for academic purposes.</span></p>
-      <p><strong data-t="consent.c2title">Format.</strong> <span data-t="consent.c2">8 questions — open text + a few quick selections. There are no right or wrong answers. Your professional experience is what matters.</span></p>
-      <p><strong data-t="consent.c3title">Voluntary.</strong> <span data-t="consent.c3">You may stop at any time. Your responses are saved locally and exported only when you click "Download" at the end.</span></p>
+  <!-- WELCOME -->
+  <div class="screen active" id="s-welcome">
+    <div class="hdr">
+      <div class="eyebrow">Master's Dissertation · 2025</div>
+      <h1>AI &amp; Supply Chain<br>in <em>Luxury</em></h1>
+      <p>A short written interview for professionals in supply chain, operations, and related functions. Your answers directly feed academic research.</p>
+      <div class="badge">⏱ Approximately 15–20 minutes</div>
     </div>
-
-
-    <button class="btn btn-primary" id="btn-start" onclick="startSurvey()" data-t="welcome.btn">Begin →</button>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════
-     SCREEN 1 — PROFILE
-     ══════════════════════════════════ -->
-<div class="screen" id="s-profile">
-  <div class="site-header" style="margin-bottom:32px">
-    <div class="label" data-t="profile.label">Your Profile</div>
-    <h1 style="font-size:clamp(24px,4vw,36px)" data-t="profile.h1">A few words <em>about you</em></h1>
-  </div>
-
-  <div class="progress-bar-wrap">
-    <div class="progress-meta"><span data-t="progress.label">Progress</span><span id="prog-text">Profile</span></div>
-    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:5%"></div></div>
-  </div>
-
-  <div class="card">
-    <div class="profile-grid">
-      <div class="field">
-        <label data-t="profile.role">Job Title / Role</label>
-        <input type="text" id="p-role" placeholder="e.g. Supply Chain Manager">
+    <div class="card">
+      <div class="cbox">
+        <p><strong>Confidentiality.</strong> All responses are fully anonymised and used solely for academic research. No identifying information will be published.</p>
+        <p><strong>Format.</strong> 8 questions — open text and a few quick selections. No right or wrong answers. Your professional experience is what matters.</p>
+        <p><strong>Voluntary.</strong> You may stop at any time.</p>
       </div>
-      <div class="field">
-        <label data-t="profile.sector">Sector</label>
-        <select id="p-sector">
-          <option value="" data-t="profile.select">— Select —</option>
-          <option value="Luxury Fashion & Leather Goods">Luxury Fashion & Leather Goods</option>
-          <option value="Luxury Cosmetics & Perfumes">Luxury Cosmetics & Perfumes</option>
-          <option value="Luxury Watches & Jewellery">Luxury Watches & Jewellery</option>
-          <option value="Luxury Wines & Spirits">Luxury Wines & Spirits</option>
-          <option value="Premium / High-End Retail">Premium / High-End Retail</option>
-          <option value="Automotive (Premium / Luxury)">Automotive (Premium / Luxury)</option>
-          <option value="Consulting / Advisory">Consulting / Advisory</option>
-          <option value="Technology (SC / AI)">Technology (SC / AI)</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="field">
-        <label data-t="profile.size">Company Size</label>
-        <select id="p-size">
-          <option value="" data-t="profile.select">— Select —</option>
-          <option value="<50">&lt; 50 employees</option>
-          <option value="50–250">50–250</option>
-          <option value="250–1000">250–1,000</option>
-          <option value="1000–5000">1,000–5,000</option>
-          <option value=">5000">&gt; 5,000</option>
-        </select>
-      </div>
-      <div class="field">
-        <label data-t="profile.sc">SC Involvement</label>
-        <select id="p-sc">
-          <option value="" data-t="profile.select">— Select —</option>
-          <option value="Operational">Operational</option>
-          <option value="Tactical">Tactical / Planning</option>
-          <option value="Strategic">Strategic</option>
-          <option value="Cross-functional">Cross-functional</option>
-        </select>
+      <div class="nav-end">
+        <button class="btn btn-ink" onclick="goScreen('s-profile')">Begin →</button>
       </div>
     </div>
-    <div class="err hidden" id="profile-err" data-t="profile.err">Please fill in all fields.</div>
-    <div class="nav-row-end">
-      <button class="btn btn-primary" onclick="goQ(0)" data-t="profile.btn">Continue →</button>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="screen" id="s-profile">
+    <div class="hdr" style="margin-bottom:32px">
+      <div class="eyebrow" id="eyebrow-profile">Your Profile</div>
+      <h1 style="font-size:clamp(24px,4vw,36px)">A few words <em>about you</em></h1>
+    </div>
+    <div class="card">
+      <div class="pgrid">
+        <div class="field">
+          <label id="lbl-role">Job Title / Role</label>
+          <input type="text" id="p-role" placeholder="e.g. Supply Chain Manager">
+        </div>
+        <div class="field">
+          <label id="lbl-sector">Sector</label>
+          <select id="p-sector">
+            <option value="">— Select —</option>
+            <option>Luxury Fashion &amp; Leather Goods</option>
+            <option>Luxury Cosmetics &amp; Perfumes</option>
+            <option>Luxury Watches &amp; Jewellery</option>
+            <option>Luxury Wines &amp; Spirits</option>
+            <option>Premium / High-End Retail</option>
+            <option>Automotive (Premium / Luxury)</option>
+            <option>Consulting / Advisory</option>
+            <option>Technology (SC / AI)</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="lbl-size">Company Size</label>
+          <select id="p-size">
+            <option value="">— Select —</option>
+            <option>&lt; 50 employees</option>
+            <option>50–250</option>
+            <option>250–1,000</option>
+            <option>1,000–5,000</option>
+            <option>&gt; 5,000</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="lbl-sc">SC Involvement</label>
+          <select id="p-sc">
+            <option value="">— Select —</option>
+            <option>Operational</option>
+            <option>Tactical / Planning</option>
+            <option>Strategic</option>
+            <option>Cross-functional</option>
+          </select>
+        </div>
+      </div>
+      <div class="err" id="profile-err">Please fill in all fields before continuing.</div>
+      <div class="nav">
+        <button class="btn btn-ghost" onclick="goScreen('s-welcome')" id="btn-back-profile">← Back</button>
+        <button class="btn btn-ink" onclick="startInterview()" id="btn-continue-profile">Continue →</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ══════════════════════════════════
-     SCREEN 2 — QUESTIONS (rendered dynamically)
-     ══════════════════════════════════ -->
-<div class="screen" id="s-questions">
-  <div class="progress-bar-wrap">
-    <div class="progress-meta">
-      <span data-t="progress.label">Progress</span>
-      <span id="q-prog-text">1 / 8</span>
+  <!-- QUESTIONS -->
+  <div class="screen" id="s-questions">
+    <div class="prog-wrap">
+      <div class="prog-meta">
+        <span id="prog-word">Progress</span>
+        <span id="prog-label">1 / 8</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:12%"></div></div>
     </div>
-    <div class="progress-track"><div class="progress-fill" id="q-prog-fill" style="width:10%"></div></div>
+    <div id="q-container"></div>
   </div>
-  <div id="q-mount"></div>
-</div>
 
-<!-- ══════════════════════════════════
-     SCREEN 4 — THANK YOU
-     ══════════════════════════════════ -->
-<div class="screen" id="s-thanks">
-  <div class="thanks-wrap">
-    <div class="thanks-icon">✦</div>
-    <h2 data-t="thanks.h2">Thank <em>you</em></h2>
-    <p data-t="thanks.p">Your responses have been recorded. They will be analysed as part of a Master's dissertation on AI and supply chain transformation in the luxury sector. Your contribution is genuinely appreciated.</p>
-    <div id="email-status" style="margin:20px auto;max-width:420px;padding:12px 20px;border-radius:6px;font-size:14px;min-height:20px;color:var(--ink-light)"></div>
-
-    <div class="export-row">
-      <button class="btn btn-primary" onclick="exportJSON()" data-t="thanks.json">↓ Download JSON</button>
-      <button class="btn btn-ghost" onclick="exportCSV()" data-t="thanks.csv">↓ Download CSV</button>
+  <!-- THANKS -->
+  <div class="screen" id="s-thanks">
+    <div class="thx">
+      <div class="thx-icon">✦</div>
+      <h2>Thank <em>you</em></h2>
+      <p id="thx-p1">Your responses have been recorded and will be analysed as part of a Master's dissertation on AI and supply chain transformation in the luxury sector.</p>
+      <p id="thx-p2">Your contribution is genuinely appreciated.</p>
+      <div class="estatus" id="estatus"></div>
+      <div class="xrow">
+        <button class="btn btn-ink" onclick="exportJSON()" id="btn-json">↓ Download JSON</button>
+        <button class="btn btn-ghost" onclick="exportCSV()" id="btn-csv">↓ Download CSV</button>
+      </div>
     </div>
   </div>
-</div>
 
-</div><!-- /shell -->
+</div>
 
 <script>
-/* ═══════════════════════════════════════════════════
-   i18n
-═══════════════════════════════════════════════════ */
-const T = {
-  en: {
-    "welcome.label": "Master's Dissertation · 2025",
-    "welcome.h1": "AI & Supply Chain<br>in <em>Luxury</em>",
-    "welcome.p": "A short written interview for professionals in supply chain, operations, and related functions. Your answers directly feed academic research.",
-    "welcome.time": "Approximately 15–20 minutes",
-    "welcome.btn": "Begin →",
-    "consent.c1title": "Confidentiality.",
-    "consent.c1": "All responses are fully anonymised. No identifying information will be published. Data is used solely for academic purposes.",
-    "consent.c2title": "Format.",
-    "consent.c2": "8 questions — open text + a few quick selections. There are no right or wrong answers. Your professional experience is what matters.",
-    "consent.c3title": "Voluntary.",
-    "consent.c3": "You may stop at any time. Your responses are saved locally and exported only when you click Download at the end.",
-    "consent.check": "I understand the above and I agree to participate in this research.",
-    "profile.label": "Your Profile",
-    "profile.h1": "A few words <em>about you</em>",
-    "profile.role": "Job Title / Role",
-    "profile.sector": "Sector",
-    "profile.size": "Company Size",
-    "profile.sc": "SC Involvement",
-    "profile.select": "— Select —",
-    "profile.err": "Please fill in all fields.",
-    "profile.btn": "Continue →",
-    "progress.label": "Progress",
-    "thanks.h2": "Thank <em>you</em>",
-    "thanks.p": "Your responses have been recorded. They will be analysed as part of a Master's dissertation on AI and supply chain transformation in the luxury sector. Your contribution is genuinely appreciated.",
-    "thanks.json": "↓ Download JSON",
-    "thanks.csv": "↓ Download CSV",
-  },
-  fr: {
-    "welcome.label": "Mémoire de Master · 2025",
-    "welcome.h1": "IA & Supply Chain<br>dans le <em>Luxe</em>",
-    "welcome.p": "Un court entretien écrit pour les professionnels de la supply chain, des opérations et fonctions connexes. Vos réponses alimentent directement une recherche académique.",
-    "welcome.time": "Environ 15–20 minutes",
-    "welcome.btn": "Commencer →",
-    "consent.c1title": "Confidentialité.",
-    "consent.c1": "Toutes les réponses sont entièrement anonymisées. Aucune information identifiable ne sera publiée. Les données sont utilisées uniquement à des fins académiques.",
-    "consent.c2title": "Format.",
-    "consent.c2": "8 questions — texte libre + quelques sélections rapides. Il n'y a pas de bonne ou mauvaise réponse. Votre expérience professionnelle est ce qui compte.",
-    "consent.c3title": "Volontaire.",
-    "consent.c3": "Vous pouvez vous arrêter à tout moment. Vos réponses sont sauvegardées localement et exportées uniquement lorsque vous cliquez sur Télécharger à la fin.",
-    "consent.check": "Je comprends ce qui précède et j'accepte de participer à cette recherche.",
-    "profile.label": "Votre Profil",
-    "profile.h1": "Quelques mots <em>sur vous</em>",
-    "profile.role": "Intitulé de poste / Rôle",
-    "profile.sector": "Secteur",
-    "profile.size": "Taille de l'entreprise",
-    "profile.sc": "Implication SC",
-    "profile.select": "— Sélectionner —",
-    "profile.err": "Veuillez remplir tous les champs.",
-    "profile.btn": "Continuer →",
-    "progress.label": "Progression",
-    "thanks.h2": "<em>Merci</em>",
-    "thanks.p": "Vos réponses ont été enregistrées. Elles seront analysées dans le cadre d'un mémoire de Master sur la transformation de la supply chain par l'IA dans le luxe. Votre contribution est sincèrement appréciée.",
-    "thanks.json": "↓ Télécharger JSON",
-    "thanks.csv": "↓ Télécharger CSV",
-  }
-};
+/* ── CONFIG ── */
+var EJ_KEY = 'o8zYpLxcCY_pj_XB7';
+var EJ_SVC = 'service_jws2ti1';
+var EJ_TPL = '1cn9jrh';
 
-let lang = 'en';
-function setLang(l) {
-  lang = l;
-  document.getElementById('lb-en').classList.toggle('active', l === 'en');
-  document.getElementById('lb-fr').classList.toggle('active', l === 'fr');
-  applyT();
-  if (currentQ >= 0) renderQ(currentQ); // re-render current question in new lang
-}
-function applyT() {
-  document.querySelectorAll('[data-t]').forEach(el => {
-    const k = el.getAttribute('data-t');
-    if (T[lang][k] !== undefined) el.innerHTML = T[lang][k];
-  });
-}
+/* ── STATE ── */
+var lang      = 'en';
+var currentQ  = 0;
+var answers   = {};
+var profile   = {};
+var sessionId = Math.random().toString(36).slice(2,10);
+var startedAt = '';
+var finishedAt= '';
 
-/* ═══════════════════════════════════════════════════
-   QUESTION BANK
-═══════════════════════════════════════════════════ */
-const QUESTIONS = [
-  // Q1 — AI current use (open)
+/* ── QUESTIONS ── */
+var QS = [
   {
-    id: 'q1_ai_use',
-    type: 'textarea',
-    en: {
-      q: 'What is your current relationship with AI in supply chain — and where do you see it having the most impact?',
-      hint: 'Whether AI is already deployed, being explored, or not yet adopted, we want to understand your perspective and experience.'
-    },
-    fr: {
-      q: 'Quel est votre rapport à l\'IA dans la supply chain aujourd\'hui — et où voyez-vous son impact le plus significatif ?',
-      hint: 'Que l\'IA soit déjà déployée, en cours d\'exploration ou pas encore adoptée, nous souhaitons comprendre votre perspective et votre expérience.'
-    }
+    type:'text',
+    en:{q:"What is your current relationship with AI in supply chain — and where do you see it having the most impact?",
+        hint:"Whether AI is already deployed, being explored, or not yet adopted — share your perspective freely."},
+    fr:{q:"Quel est votre rapport à l'IA dans la supply chain aujourd'hui — et où voyez-vous son impact le plus significatif ?",
+        hint:"Que l'IA soit déjà déployée, en cours d'exploration ou pas encore adoptée — partagez librement votre perspective."}
   },
-
-  // Q2 — SC processes (multi-select + open)
   {
-    id: 'q2_sc_processes',
-    type: 'multi_open',
-    en: {
-      q: 'Which supply chain processes are most impacted by AI in your organisation?',
-      hint: 'Select all that apply, then briefly describe the most significant impact.',
-      options: ['Demand forecasting','Inventory management','Procurement / Sourcing','Logistics & transport','Warehousing','Traceability','Customer service','Planning & S&OP'],
-      openLabel: 'In a few words, describe the most significant impact:'
-    },
-    fr: {
-      q: 'Quels processus supply chain sont les plus impactés par l\'IA dans votre organisation ?',
-      hint: 'Sélectionnez tout ce qui s\'applique, puis décrivez brièvement l\'impact le plus significatif.',
-      options: ['Prévision de la demande','Gestion des stocks','Achats / Sourcing','Logistique & transport','Entreposage','Traçabilité','Service client','Planification & S&OP'],
-      openLabel: 'En quelques mots, décrivez l\'impact le plus significatif :'
-    }
+    type:'check',
+    en:{q:"Which supply chain processes are most impacted by AI in your organisation?",
+        hint:"Select all that apply, then describe the most significant impact in a few words.",
+        options:['Demand forecasting','Inventory management','Procurement / Sourcing','Logistics & transport','Warehousing','Traceability','Customer service','Planning & S&OP'],
+        openLabel:"Describe the most significant impact:"},
+    fr:{q:"Quels processus supply chain sont les plus impactés par l'IA dans votre organisation ?",
+        hint:"Sélectionnez tout ce qui s'applique, puis décrivez brièvement l'impact le plus significatif.",
+        options:['Prévision de la demande','Gestion des stocks','Achats / Sourcing','Logistique & transport','Entreposage','Traçabilité','Service client','Planification & S&OP'],
+        openLabel:"Décrivez l'impact le plus significatif :"}
   },
-
-  // Q3 — Motivations (open - simplified)
   {
-    id: 'q3_motivations',
-    type: 'textarea',
-    en: {
-      q: 'What are the 2 or 3 main reasons that drive — or would drive — AI adoption in your supply chain?',
-      hint: 'For example: cost reduction, better forecasting, traceability, customer experience, speed, visibility… Be as specific as you like.'
-    },
-    fr: {
-      q: 'Quelles sont les 2 ou 3 principales raisons qui motivent — ou motiveraient — l\'adoption de l\'IA dans votre supply chain ?',
-      hint: 'Par exemple : réduction des coûts, meilleure prévision, traçabilité, expérience client, rapidité, visibilité… Soyez aussi précis que vous le souhaitez.'
-    }
+    type:'text',
+    en:{q:"What are the 2 or 3 main reasons that drive — or would drive — AI adoption in your supply chain?",
+        hint:"For example: cost reduction, better forecasting, traceability, customer experience, speed, visibility…"},
+    fr:{q:"Quelles sont les 2 ou 3 principales raisons qui motivent — ou motiveraient — l'adoption de l'IA dans votre supply chain ?",
+        hint:"Par exemple : réduction des coûts, meilleure prévision, traçabilité, expérience client, rapidité, visibilité…"}
   },
-
-  // Q4 — Barriers (open)
   {
-    id: 'q4_barriers',
-    type: 'textarea',
-    en: {
-      q: 'What are the main barriers or challenges you face when implementing AI in the supply chain?',
-      hint: 'For example: data quality, internal skills, costs, resistance to change, integration issues, ROI uncertainty…'
-    },
-    fr: {
-      q: 'Quels sont les principaux obstacles ou défis rencontrés lors de l\'implémentation de l\'IA dans la supply chain ?',
-      hint: 'Par exemple : qualité des données, compétences internes, coûts, résistance au changement, intégration, incertitude sur le ROI…'
-    }
+    type:'text',
+    en:{q:"What are the main barriers or challenges you face when implementing AI in the supply chain?",
+        hint:"For example: data quality, internal skills, costs, resistance to change, integration issues, ROI uncertainty…"},
+    fr:{q:"Quels sont les principaux obstacles ou défis rencontrés lors de l'implémentation de l'IA dans la supply chain ?",
+        hint:"Par exemple : qualité des données, compétences internes, coûts, résistance au changement, intégration, incertitude sur le ROI…"}
   },
-
-  // Q5 — Luxury specifics (open)
   {
-    id: 'q5_luxury',
-    type: 'textarea',
-    en: {
-      q: 'To what extent do sector-specific requirements — such as quality standards, exclusivity, traceability, or brand image — shape your approach to AI in the supply chain?',
-      hint: 'If you work in or with the luxury sector, feel free to draw on that context. If not, think about the high-end or premium constraints relevant to your industry.'
-    },
-    fr: {
-      q: 'Dans quelle mesure les exigences spécifiques à votre secteur — qualité, exclusivité, traçabilité, image de marque — influencent-elles votre approche de l\'IA dans la supply chain ?',
-      hint: 'Si vous travaillez dans ou avec le secteur du luxe, appuyez-vous sur ce contexte. Sinon, pensez aux contraintes premium propres à votre industrie.'
-    }
+    type:'text',
+    en:{q:"To what extent do sector-specific requirements — quality, exclusivity, traceability, brand image — shape your approach to AI in the supply chain?",
+        hint:"If you work in or with the luxury sector, draw on that context. If not, think about the premium constraints relevant to your industry."},
+    fr:{q:"Dans quelle mesure les exigences spécifiques à votre secteur — qualité, exclusivité, traçabilité, image de marque — influencent-elles votre approche de l'IA dans la supply chain ?",
+        hint:"Si vous travaillez dans ou avec le secteur du luxe, appuyez-vous sur ce contexte. Sinon, pensez aux contraintes premium propres à votre industrie."}
   },
-
-  // Q6 — Transformation vs optimisation (scale + open)
   {
-    id: 'q6_transformation',
-    type: 'single_scale_open',
-    en: {
-      q: 'In your view, is AI truly transforming supply chain management — or mainly optimising existing processes?',
-      hint: 'Position yourself on the scale, then briefly explain your view.',
-      scaleMin: 'Pure optimisation',
-      scaleMax: 'Deep transformation',
-      openLabel: 'Why? What is your reasoning?'
-    },
-    fr: {
-      q: 'Selon vous, l\'IA transforme-t-elle réellement le management de la supply chain — ou optimise-t-elle principalement les processus existants ?',
-      hint: 'Positionnez-vous sur l\'échelle, puis expliquez brièvement votre point de vue.',
-      scaleMin: 'Pure optimisation',
-      scaleMax: 'Transformation profonde',
-      openLabel: 'Pourquoi ? Quel est votre raisonnement ?'
-    }
+    type:'scale',
+    en:{q:"In your view, is AI truly transforming supply chain management — or mainly optimising existing processes?",
+        hint:"Position yourself on the scale, then briefly explain your reasoning.",
+        minLabel:"Pure optimisation", maxLabel:"Deep transformation",
+        openLabel:"Why? What is your reasoning?"},
+    fr:{q:"Selon vous, l'IA transforme-t-elle réellement le management de la supply chain — ou optimise-t-elle principalement les processus existants ?",
+        hint:"Positionnez-vous sur l'échelle, puis expliquez brièvement votre point de vue.",
+        minLabel:"Pure optimisation", maxLabel:"Transformation profonde",
+        openLabel:"Pourquoi ? Quel est votre raisonnement ?"}
   },
-
-  // Q7 — Success factors (open)
   {
-    id: 'q7_success',
-    type: 'textarea',
-    en: {
-      q: 'In your experience, what conditions are essential for AI to succeed in a supply chain context?',
-      hint: 'Think about leadership, data readiness, skills, organisational culture, governance, or strategic alignment.'
-    },
-    fr: {
-      q: 'Selon votre expérience, quelles conditions sont essentielles pour que l\'IA réussisse dans un contexte supply chain ?',
-      hint: 'Pensez au leadership, à la maturité des données, aux compétences, à la culture organisationnelle, à la gouvernance ou à l\'alignement stratégique.'
-    }
+    type:'text',
+    en:{q:"In your experience, what conditions are essential for AI to succeed in a supply chain context?",
+        hint:"Think about leadership, data readiness, skills, organisational culture, governance, or strategic alignment."},
+    fr:{q:"Selon votre expérience, quelles conditions sont essentielles pour que l'IA réussisse dans un contexte supply chain ?",
+        hint:"Pensez au leadership, à la maturité des données, aux compétences, à la culture organisationnelle, à la gouvernance ou à l'alignement stratégique."}
   },
-
-  // Q8 — Future outlook (open)
   {
-    id: 'q8_future',
-    type: 'textarea',
-    en: {
-      q: 'Looking ahead 3–5 years: how do you see the role of AI evolving in luxury supply chain management?',
-      hint: 'This is your chance to share a forward-looking perspective. There is no wrong answer.'
-    },
-    fr: {
-      q: 'Dans 3 à 5 ans : comment envisagez-vous l\'évolution du rôle de l\'IA dans le management de la supply chain du luxe ?',
-      hint: 'C\'est l\'occasion de partager une perspective prospective. Il n\'y a pas de mauvaise réponse.'
-    }
+    type:'text',
+    en:{q:"Looking ahead 3–5 years: how do you see the role of AI evolving in luxury supply chain management?",
+        hint:"Share a forward-looking perspective. There is no wrong answer."},
+    fr:{q:"Dans 3 à 5 ans : comment envisagez-vous l'évolution du rôle de l'IA dans le management de la supply chain du luxe ?",
+        hint:"C'est l'occasion de partager une perspective prospective. Il n'y a pas de mauvaise réponse."}
   }
 ];
 
-/* ═══════════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════════ */
-// Restore from localStorage if available
-const STORAGE_KEY = 'dissertation_survey_v1';
-function loadSavedState() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  return null;
-}
-const saved = loadSavedState();
-const state = saved || {
-  sessionId: crypto.randomUUID(),
-  startedAt: null,
-  profile: {},
-  answers: {}
-};
-
-function persistState() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
-}
-
-let currentQ = -1;
-
-/* ═══════════════════════════════════════════════════
-   NAVIGATION
-═══════════════════════════════════════════════════ */
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function startSurvey() {
-  state.startedAt = new Date().toISOString();
-  showScreen('s-profile');
-}
-
-function goQ(index) {
-  // Validate profile on first call
-  if (index === 0) {
-    const role = document.getElementById('p-role').value.trim();
-    const sector = document.getElementById('p-sector').value;
-    const size = document.getElementById('p-size').value;
-    const sc = document.getElementById('p-sc').value;
-    if (!role || !sector || !size || !sc) {
-      document.getElementById('profile-err').classList.remove('hidden');
-      return;
-    }
-    document.getElementById('profile-err').classList.add('hidden');
-    state.profile = { role, sector, size, sc };
-    persistState();
-    showScreen('s-questions');
-  }
-
-  // Save current answer before moving
-  if (currentQ >= 0) saveCurrentAnswer();
-
-  currentQ = index;
-  renderQ(index);
-  updateProgress();
-}
-
-function prevQ() {
-  saveCurrentAnswer();
-  if (currentQ > 0) { currentQ--; renderQ(currentQ); updateProgress(); }
-  else { showScreen('s-profile'); }
-}
-
-function nextQ() {
-  saveCurrentAnswer();
-  if (currentQ < QUESTIONS.length - 1) {
-    currentQ++;
-    renderQ(currentQ);
-    updateProgress();
+/* ── LANGUAGE ── */
+function setLang(l) {
+  lang = l;
+  document.getElementById('lb-en').className = l==='en'?'on':'';
+  document.getElementById('lb-fr').className = l==='fr'?'on':'';
+  if (l==='fr') {
+    document.getElementById('eyebrow-profile').textContent = 'Votre Profil';
+    document.getElementById('lbl-role').textContent   = 'Intitulé de poste';
+    document.getElementById('lbl-sector').textContent = 'Secteur';
+    document.getElementById('lbl-size').textContent   = "Taille de l'entreprise";
+    document.getElementById('lbl-sc').textContent     = 'Implication SC';
+    document.getElementById('btn-back-profile').textContent    = '← Retour';
+    document.getElementById('btn-continue-profile').textContent= 'Continuer →';
+    document.getElementById('prog-word').textContent  = 'Progression';
+    document.getElementById('thx-p1').textContent     = "Vos réponses ont été enregistrées et seront analysées dans le cadre d'un mémoire de Master.";
+    document.getElementById('thx-p2').textContent     = 'Votre contribution est sincèrement appréciée.';
+    document.getElementById('btn-json').textContent   = '↓ Télécharger JSON';
+    document.getElementById('btn-csv').textContent    = '↓ Télécharger CSV';
   } else {
-    // Done
-    state.finishedAt = new Date().toISOString();
-    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
-    showScreen('s-thanks');
-    sendEmail(); // auto-send results by email
+    document.getElementById('eyebrow-profile').textContent = 'Your Profile';
+    document.getElementById('lbl-role').textContent   = 'Job Title / Role';
+    document.getElementById('lbl-sector').textContent = 'Sector';
+    document.getElementById('lbl-size').textContent   = 'Company Size';
+    document.getElementById('lbl-sc').textContent     = 'SC Involvement';
+    document.getElementById('btn-back-profile').textContent    = '← Back';
+    document.getElementById('btn-continue-profile').textContent= 'Continue →';
+    document.getElementById('prog-word').textContent  = 'Progress';
+    document.getElementById('thx-p1').textContent     = "Your responses have been recorded and will be analysed as part of a Master's dissertation.";
+    document.getElementById('thx-p2').textContent     = 'Your contribution is genuinely appreciated.';
+    document.getElementById('btn-json').textContent   = '↓ Download JSON';
+    document.getElementById('btn-csv').textContent    = '↓ Download CSV';
+  }
+  if (document.getElementById('s-questions').classList.contains('active')) {
+    renderQ(currentQ);
   }
 }
 
-function updateProgress() {
-  const pct = Math.round(((currentQ + 1) / QUESTIONS.length) * 100);
-  document.getElementById('q-prog-fill').style.width = pct + '%';
-  document.getElementById('q-prog-text').textContent = `${currentQ + 1} / ${QUESTIONS.length}`;
+/* ── SCREEN NAV ── */
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
 }
 
-/* ═══════════════════════════════════════════════════
-   RENDER QUESTION
-═══════════════════════════════════════════════════ */
-function renderQ(index) {
-  const q = QUESTIONS[index];
-  const d = q[lang];
-  const saved = state.answers[q.id] || {};
-  const mount = document.getElementById('q-mount');
+/* ── PROFILE → START ── */
+function startInterview() {
+  var role   = document.getElementById('p-role').value.trim();
+  var sector = document.getElementById('p-sector').value;
+  var size   = document.getElementById('p-size').value;
+  var sc     = document.getElementById('p-sc').value;
+  var err    = document.getElementById('profile-err');
+  if (!role || !sector || !size || !sc) { err.style.display='block'; return; }
+  err.style.display='none';
+  profile   = {role:role, sector:sector, size:size, sc:sc};
+  startedAt = new Date().toISOString();
+  currentQ  = 0;
+  goScreen('s-questions');
+  renderQ(0);
+}
 
-  let inner = '';
+/* ── RENDER QUESTION ── */
+function renderQ(i) {
+  var q      = QS[i];
+  var d      = q[lang];
+  var av     = answers[i] || {};
+  var isLast = (i === QS.length-1);
+  var ph     = lang==='fr' ? 'Votre réponse…' : 'Your answer…';
 
-  // ── textarea ──
-  if (q.type === 'textarea') {
-    inner = `
-      <div class="card" style="animation-delay:0s">
-        <div class="q-number">${lang === 'fr' ? 'Question' : 'Question'} ${index + 1} / ${QUESTIONS.length}</div>
-        <div class="q-text">${d.q}</div>
-        <div class="q-hint">${d.hint}</div>
-        <textarea id="ans-main" placeholder="${lang === 'fr' ? 'Votre réponse…' : 'Your answer…'}">${saved.main || ''}</textarea>
-        ${navButtons(index)}
-      </div>`;
+  document.getElementById('prog-label').textContent = (i+1)+' / '+QS.length;
+  document.getElementById('prog-fill').style.width = Math.round(((i+1)/QS.length)*100)+'%';
+
+  var h = '<div class="card">';
+  h += '<div class="qnum">Question '+(i+1)+' / '+QS.length+'</div>';
+  h += '<div class="qtxt">'+d.q+'</div>';
+  h += '<div class="qhint">'+d.hint+'</div>';
+
+  if (q.type==='text') {
+    h += '<textarea id="ans-text" placeholder="'+ph+'">'+(av.text||'')+'</textarea>';
   }
 
-  // ── multi_open: checkboxes + open text ──
-  else if (q.type === 'multi_open') {
-    const checks = d.options.map((opt, i) => {
-      const isSel = (saved.selected || []).includes(opt);
-      return `<label class="check-item${isSel ? ' selected' : ''}" onclick="toggleCheck(this,'${opt.replace(/'/g,"\\'")}','q2-checks')">
-        <input type="checkbox" ${isSel ? 'checked' : ''}>
-        <div class="check-dot"></div>
-        <span>${opt}</span>
-      </label>`;
-    }).join('');
-    inner = `
-      <div class="card">
-        <div class="q-number">Question ${index + 1} / ${QUESTIONS.length}</div>
-        <div class="q-text">${d.q}</div>
-        <div class="q-hint">${d.hint}</div>
-        <div class="check-grid" id="q2-checks">${checks}</div>
-        <div style="margin-top:20px">
-          <label style="font-size:12px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px">${d.openLabel}</label>
-          <textarea id="ans-main" style="min-height:80px" placeholder="${lang === 'fr' ? 'Votre réponse…' : 'Your answer…'}">${saved.main || ''}</textarea>
-        </div>
-        ${navButtons(index)}
-      </div>`;
-  }
-
-  // ── scale_open: importance ratings per driver + open ──
-  else if (q.type === 'scale_open') {
-    const rows = d.drivers.map(drv => {
-      const val = (saved.ratings || {})[drv] || 0;
-      const btns = [1,2,3,4,5].map(n =>
-        `<button class="scale-btn${val==n?' selected':''}" onclick="rateDriver(this,'${drv.replace(/'/g,"\\'")}','${n}')">${n}</button>`
-      ).join('');
-      return `<div style="margin-bottom:16px">
-        <div style="font-size:13px;color:var(--ink);margin-bottom:6px">${drv}</div>
-        <div class="scale-group">${btns}</div>
-      </div>`;
-    }).join('');
-    inner = `
-      <div class="card">
-        <div class="q-number">Question ${index + 1} / ${QUESTIONS.length}</div>
-        <div class="q-text">${d.q}</div>
-        <div class="q-hint">${d.hint}</div>
-        <div class="scale-labels" style="margin-bottom:8px"><span>${lang==='fr'?'Pas important':'Not important'}</span><span>${lang==='fr'?'Très important':'Very important'}</span></div>
-        <div id="ratings-wrap">${rows}</div>
-        <div style="margin-top:20px">
-          <label style="font-size:12px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px">${d.openLabel}</label>
-          <textarea id="ans-main" style="min-height:70px" placeholder="${lang === 'fr' ? 'Votre réponse…' : 'Your answer…'}">${saved.main || ''}</textarea>
-        </div>
-        ${navButtons(index)}
-      </div>`;
-  }
-
-  // ── single_scale_open: one scale + open ──
-  else if (q.type === 'single_scale_open') {
-    const val = saved.scale || 0;
-    const btns = [1,2,3,4,5].map(n =>
-      `<button class="scale-btn${val==n?' selected':''}" onclick="selectScale(this,${n})" style="flex:1;padding:14px 8px;font-size:15px">${n}</button>`
-    ).join('');
-    inner = `
-      <div class="card">
-        <div class="q-number">Question ${index + 1} / ${QUESTIONS.length}</div>
-        <div class="q-text">${d.q}</div>
-        <div class="q-hint">${d.hint}</div>
-        <div class="scale-group" id="single-scale">${btns}</div>
-        <div class="scale-labels"><span>${d.scaleMin}</span><span>${d.scaleMax}</span></div>
-        <div style="margin-top:24px">
-          <label style="font-size:12px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px">${d.openLabel}</label>
-          <textarea id="ans-main" placeholder="${lang === 'fr' ? 'Votre réponse…' : 'Your answer…'}">${saved.main || ''}</textarea>
-        </div>
-        ${navButtons(index)}
-      </div>`;
-  }
-
-  mount.innerHTML = inner;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function navButtons(index) {
-  const isLast = index === QUESTIONS.length - 1;
-  const backLabel = lang === 'fr' ? '← Retour' : '← Back';
-  const nextLabel = isLast
-    ? (lang === 'fr' ? 'Terminer ✓' : 'Finish ✓')
-    : (lang === 'fr' ? 'Suivant →' : 'Next →');
-  const nextClass = isLast ? 'btn-gold' : 'btn-primary';
-  return `<div class="nav-row">
-    <button class="btn btn-ghost" onclick="prevQ()">${backLabel}</button>
-    <button class="btn ${nextClass}" onclick="nextQ()">${nextLabel}</button>
-  </div>`;
-}
-
-/* ═══════════════════════════════════════════════════
-   INTERACTION HELPERS
-═══════════════════════════════════════════════════ */
-function toggleCheck(el, value, groupId) {
-  el.classList.toggle('selected');
-}
-
-function rateDriver(btn, driver, value) {
-  // Deselect siblings in same driver row
-  const row = btn.closest('div');
-  row.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-}
-
-function selectScale(btn, value) {
-  document.querySelectorAll('#single-scale .scale-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-}
-
-/* ═══════════════════════════════════════════════════
-   SAVE ANSWER
-═══════════════════════════════════════════════════ */
-function saveCurrentAnswer() {
-  if (currentQ < 0) return;
-  const q = QUESTIONS[currentQ];
-  const d = q[lang];
-
-  if (q.type === 'textarea') {
-    const el = document.getElementById('ans-main');
-    state.answers[q.id] = { main: el ? el.value.trim() : '' };
-    persistState();
-  }
-  else if (q.type === 'multi_open') {
-    const selected = [...document.querySelectorAll('#q2-checks .check-item.selected')]
-      .map(el => el.querySelector('span').textContent);
-    const main = document.getElementById('ans-main');
-    state.answers[q.id] = { selected, main: main ? main.value.trim() : '' };
-  }
-  else if (q.type === 'scale_open') {
-    const ratings = {};
-    document.querySelectorAll('#ratings-wrap > div').forEach(row => {
-      const driver = row.querySelector('div').textContent;
-      const sel = row.querySelector('.scale-btn.selected');
-      if (sel) ratings[driver] = parseInt(sel.textContent);
-    });
-    const main = document.getElementById('ans-main');
-    state.answers[q.id] = { ratings, main: main ? main.value.trim() : '' };
-  }
-  else if (q.type === 'single_scale_open') {
-    const sel = document.querySelector('#single-scale .scale-btn.selected');
-    const main = document.getElementById('ans-main');
-    state.answers[q.id] = {
-      scale: sel ? parseInt(sel.textContent) : null,
-      main: main ? main.value.trim() : ''
-    };
-  }
-}
-
-/* ═══════════════════════════════════════════════════
-   EXPORT
-═══════════════════════════════════════════════════ */
-function buildExport() {
-  return {
-    sessionId: state.sessionId,
-    exportedAt: new Date().toISOString(),
-    startedAt: state.startedAt,
-    finishedAt: state.finishedAt,
-    lang,
-    profile: state.profile,
-    answers: state.answers
-  };
-}
-
-function exportJSON() {
-  const blob = new Blob([JSON.stringify(buildExport(), null, 2)], { type: 'application/json' });
-  dl(blob, `interview_${state.sessionId.slice(0,8)}.json`);
-}
-
-function exportCSV() {
-  const rows = [['session_id','started_at','finished_at','lang','role','sector','size','sc_involvement','question_id','answer_text']];
-  const p = state.profile;
-  QUESTIONS.forEach(q => {
-    const a = state.answers[q.id] || {};
-    let text = '';
-    if (a.main) text = a.main;
-    if (a.selected) text = a.selected.join('; ') + (a.main ? ' | ' + a.main : '');
-    if (a.ratings) text = Object.entries(a.ratings).map(([k,v])=>`${k}:${v}`).join('; ') + (a.main ? ' | ' + a.main : '');
-    if (a.scale != null && a.main !== undefined) text = `Scale:${a.scale} | ${a.main}`;
-    rows.push([state.sessionId, state.startedAt, state.finishedAt, lang, p.role, p.sector, p.size, p.sc, q.id, `"${(text||'').replace(/"/g,'""')}"`]);
-  });
-  const csv = rows.map(r => r.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  dl(blob, `interview_${state.sessionId.slice(0,8)}.csv`);
-}
-
-function dl(blob, name) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = name; a.click();
-  URL.revokeObjectURL(url);
-}
-
-/* ═══════════════════════════════════════════════════
-   EMAILJS CONFIG
-═══════════════════════════════════════════════════ */
-const EMAILJS_PUBLIC_KEY  = 'o8zYpLxcCY_pj_XB7';
-const EMAILJS_SERVICE_ID  = 'service_jws2ti1';
-const EMAILJS_TEMPLATE_ID = '1cn9jrh';
-
-function buildEmailBody() {
-  const p = state.profile;
-  const lines = [];
-  lines.push('=== PROFIL PARTICIPANT ===');
-  lines.push('Rôle : ' + (p.role || '—'));
-  lines.push('Secteur : ' + (p.sector || '—'));
-  lines.push('Taille entreprise : ' + (p.size || '—'));
-  lines.push('Implication SC : ' + (p.sc || '—'));
-  lines.push('Langue : ' + lang);
-  lines.push('Session : ' + state.sessionId);
-  lines.push('Démarré : ' + (state.startedAt || '—'));
-  lines.push('Terminé : ' + (state.finishedAt || '—'));
-  lines.push('');
-
-  const labels = {
-    q1_ai_use:       "Q1 — Usage actuel de l'IA",
-    q2_sc_processes: 'Q2 — Processus SC impactés',
-    q3_motivations:  'Q3 — Motivations',
-    q4_barriers:     'Q4 — Barrières',
-    q5_luxury:       'Q5 — Spécificités luxe',
-    q6_transformation:'Q6 — Transformation vs optimisation',
-    q7_success:      'Q7 — Facteurs de succès',
-    q8_future:       'Q8 — Perspectives 3–5 ans',
-  };
-
-  QUESTIONS.forEach(q => {
-    const a = state.answers[q.id] || {};
-    lines.push('=== ' + (labels[q.id] || q.id) + ' ===');
-    if (a.selected && a.selected.length) lines.push('Sélections : ' + a.selected.join(', '));
-    if (a.ratings) {
-      lines.push('Évaluations :');
-      Object.entries(a.ratings).forEach(([k,v]) => lines.push('  ' + k + ' : ' + v + '/5'));
+  if (q.type==='check') {
+    var sel = av.selected || [];
+    h += '<div class="cgrid" id="cgrid">';
+    for (var oi=0; oi<d.options.length; oi++) {
+      var opt = d.options[oi];
+      var isOn = sel.indexOf(opt) >= 0;
+      // onclick directly on the div — no label, no input, no event bubbling issues
+      h += '<div class="ci'+(isOn?' on':'')+'" onclick="toggleCI(this)">';
+      h += '<div class="cdot">'+(isOn?'✓':'')+'</div>';
+      h += '<span>'+opt+'</span>';
+      h += '</div>';
     }
-    if (a.scale != null) lines.push('Échelle : ' + a.scale + '/5');
-    if (a.main) lines.push('Réponse : ' + a.main);
-    if (!a.selected && a.scale == null && !a.main) lines.push('(pas de réponse)');
-    lines.push('');
-  });
+    h += '</div>';
+    h += '<span class="sublabel">'+d.openLabel+'</span>';
+    h += '<textarea id="ans-text" style="min-height:80px" placeholder="'+ph+'">'+(av.text||'')+'</textarea>';
+  }
 
+  if (q.type==='scale') {
+    var sv = av.scale || 0;
+    h += '<div class="sgroup" id="sgroup">';
+    for (var n=1; n<=5; n++) {
+      h += '<button class="sbtn'+(sv===n?' on':'')+'" onclick="pickScale(this,'+n+')">'+n+'</button>';
+    }
+    h += '</div>';
+    h += '<div class="slabels"><span>'+d.minLabel+'</span><span>'+d.maxLabel+'</span></div>';
+    h += '<span class="sublabel">'+d.openLabel+'</span>';
+    h += '<textarea id="ans-text" placeholder="'+ph+'">'+(av.text||'')+'</textarea>';
+  }
+
+  var backLbl = lang==='fr'?'← Retour':'← Back';
+  var nextLbl = isLast?(lang==='fr'?'Terminer ✓':'Finish ✓'):(lang==='fr'?'Suivant →':'Next →');
+  var nextCls = isLast?'btn-gold':'btn-ink';
+  h += '<div class="nav">';
+  h += '<button class="btn btn-ghost" onclick="navBack()">'+backLbl+'</button>';
+  h += '<button class="btn '+nextCls+'" onclick="navNext()">'+nextLbl+'</button>';
+  h += '</div></div>';
+
+  document.getElementById('q-container').innerHTML = h;
+  window.scrollTo(0,0);
+}
+
+/* ── CHECKBOX TOGGLE — the fix ── */
+function toggleCI(el) {
+  var isOn = el.classList.contains('on');
+  if (isOn) {
+    el.classList.remove('on');
+    el.querySelector('.cdot').textContent = '';
+  } else {
+    el.classList.add('on');
+    el.querySelector('.cdot').textContent = '✓';
+  }
+}
+
+/* ── SCALE TOGGLE ── */
+function pickScale(btn, val) {
+  var btns = document.querySelectorAll('.sbtn');
+  for (var i=0; i<btns.length; i++) btns[i].classList.remove('on');
+  btn.classList.add('on');
+  if (!answers[currentQ]) answers[currentQ]={};
+  answers[currentQ].scale = val;
+}
+
+/* ── SAVE ANSWER ── */
+function saveAnswer() {
+  if (!answers[currentQ]) answers[currentQ]={};
+  var ta = document.getElementById('ans-text');
+  if (ta) answers[currentQ].text = ta.value.trim();
+
+  var q = QS[currentQ];
+  if (q.type==='check') {
+    var sel=[];
+    var items = document.querySelectorAll('.ci.on span');
+    for (var i=0; i<items.length; i++) sel.push(items[i].textContent);
+    answers[currentQ].selected = sel;
+  }
+  if (q.type==='scale') {
+    var sb = document.querySelector('.sbtn.on');
+    answers[currentQ].scale = sb ? parseInt(sb.textContent) : null;
+  }
+  try { localStorage.setItem('dsurv',JSON.stringify({answers:answers,profile:profile,lang:lang,sessionId:sessionId,startedAt:startedAt})); } catch(e){}
+}
+
+/* ── NAVIGATION ── */
+function navNext() {
+  saveAnswer();
+  if (currentQ < QS.length-1) { currentQ++; renderQ(currentQ); }
+  else { finishSurvey(); }
+}
+function navBack() {
+  saveAnswer();
+  if (currentQ > 0) { currentQ--; renderQ(currentQ); }
+  else { goScreen('s-profile'); }
+}
+
+/* ── FINISH ── */
+function finishSurvey() {
+  finishedAt = new Date().toISOString();
+  try { localStorage.removeItem('dsurv'); } catch(e){}
+  goScreen('s-thanks');
+  sendEmail();
+}
+
+/* ── EMAIL ── */
+function buildBody() {
+  var L=['Q1 — AI relationship','Q2 — SC processes','Q3 — Motivations','Q4 — Barriers','Q5 — Sector constraints','Q6 — Transformation scale','Q7 — Success factors','Q8 — Future outlook'];
+  var lines=['=== PROFILE ===','Role: '+profile.role,'Sector: '+profile.sector,'Size: '+profile.size,'SC: '+profile.sc,'Lang: '+lang,'Session: '+sessionId,'Started: '+startedAt,'Finished: '+finishedAt,''];
+  for (var i=0; i<QS.length; i++) {
+    var a=answers[i]||{};
+    lines.push('=== '+L[i]+' ===');
+    if (a.selected && a.selected.length) lines.push('Selected: '+a.selected.join(', '));
+    if (a.scale) lines.push('Scale: '+a.scale+'/5');
+    if (a.text)  lines.push('Answer: '+a.text);
+    if (!a.text && !a.selected && !a.scale) lines.push('(no answer)');
+    lines.push('');
+  }
   return lines.join('\n');
 }
 
-async function sendEmail() {
-  const statusEl = document.getElementById('email-status');
-  statusEl.textContent = lang === 'fr' ? '⏳ Envoi en cours…' : '⏳ Sending…';
-  statusEl.style.color = 'var(--ink-light)';
-
+function sendEmail() {
+  var el = document.getElementById('estatus');
+  el.textContent = lang==='fr'?'⏳ Envoi en cours…':'⏳ Sending responses…';
   try {
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      title: state.profile.role + ' — ' + state.profile.sector,
-      name:  state.profile.role || 'Participant',
-      email: 'noreply@research.com',
-      message: buildEmailBody()
+    emailjs.init(EJ_KEY);
+    emailjs.send(EJ_SVC, EJ_TPL, {
+      title:   profile.role+' — '+profile.sector,
+      name:    profile.role||'Participant',
+      email:   'noreply@research.com',
+      message: buildBody()
+    }).then(function() {
+      el.style.color='#4a7c59';
+      el.textContent=lang==='fr'?'✅ Réponses envoyées à anterieuxnoe@gmail.com':'✅ Responses sent to anterieuxnoe@gmail.com';
+    }, function(err) {
+      el.style.color='#b05050';
+      el.textContent=lang==='fr'?'⚠️ Envoi échoué — téléchargez le JSON.':'⚠️ Send failed — please download the JSON.';
     });
-    statusEl.innerHTML = lang === 'fr'
-      ? '✅ Réponses envoyées avec succès à anterieuxnoe@gmail.com'
-      : '✅ Responses sent successfully to anterieuxnoe@gmail.com';
-    statusEl.style.color = '#4a7c59';
-  } catch(err) {
-    console.error('EmailJS error:', err);
-    statusEl.innerHTML = lang === 'fr'
-      ? '⚠️ Envoi automatique échoué — merci de télécharger le JSON et de l\'envoyer manuellement.'
-      : '⚠️ Auto-send failed — please download the JSON and send it manually.';
-    statusEl.style.color = '#b05050';
+  } catch(e) {
+    el.style.color='#b05050';
+    el.textContent='⚠️ EmailJS unavailable. Please download the JSON.';
   }
 }
 
-/* ═══════════════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════════════ */
-applyT();
+/* ── EXPORT ── */
+function exportJSON() {
+  var d={sessionId:sessionId,exportedAt:new Date().toISOString(),startedAt:startedAt,finishedAt:finishedAt,lang:lang,profile:profile,answers:answers};
+  dl(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}),'interview_'+sessionId+'.json');
+}
+function exportCSV() {
+  var L=['Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8'];
+  var rows=[['session','started','finished','lang','role','sector','size','sc','question','selected','scale','text']];
+  for (var i=0; i<QS.length; i++) {
+    var a=answers[i]||{};
+    rows.push([sessionId,startedAt,finishedAt,lang,profile.role,profile.sector,profile.size,profile.sc,L[i],
+      '"'+((a.selected||[]).join('; ').replace(/"/g,'""'))+'"',
+      a.scale||'',
+      '"'+((a.text||'').replace(/"/g,'""'))+'"'
+    ]);
+  }
+  dl(new Blob([rows.map(function(r){return r.join(',');}).join('\n')],{type:'text/csv'}),'interview_'+sessionId+'.csv');
+}
+function dl(blob,name){var u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
+
+/* ── RESTORE FROM LOCALSTORAGE ── */
+try {
+  var sv=JSON.parse(localStorage.getItem('dsurv')||'null');
+  if(sv){answers=sv.answers||{};profile=sv.profile||{};lang=sv.lang||'en';sessionId=sv.sessionId||sessionId;startedAt=sv.startedAt||'';}
+} catch(e){}
 </script>
 </body>
 </html>
