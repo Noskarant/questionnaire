@@ -486,11 +486,20 @@ function buildBody() {
   return lines.join('\n');
 }
 
+// Init EmailJS once at load time
+(function() {
+  var waitForEJ = setInterval(function() {
+    if (typeof emailjs !== 'undefined') {
+      emailjs.init(EJ_KEY);
+      clearInterval(waitForEJ);
+    }
+  }, 100);
+})();
+
 function sendEmail() {
   var el = document.getElementById('estatus');
   el.textContent = lang==='fr'?'⏳ Envoi en cours…':'⏳ Sending responses…';
   try {
-    emailjs.init(EJ_KEY);
     emailjs.send(EJ_SVC, EJ_TPL, {
       title:   profile.role+' — '+profile.sector,
       name:    profile.role||'Participant',
